@@ -88,13 +88,13 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
     return (
         <div
-            className="fixed inset-0 z-[100] min-h-screen flex flex-col items-center justify-between bg-zinc-950 pt-16 pb-8 overflow-hidden select-none"
+            className="fixed inset-0 z-[100] min-h-screen flex flex-col items-center justify-start bg-zinc-950 pt-12 pb-8 overflow-hidden select-none"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
         >
             {/* 1. FIXED HERO SECTION (Does not unmount/remount) */}
-            <div className="flex-1 w-full flex flex-col items-center justify-center gap-8 relative pointer-events-none mb-4">
+            <div className="w-full flex flex-col items-center justify-start relative pointer-events-none mb-2 pt-4">
                 {/* Fixed Fan Stack - Container Height Increased to prevent overlap */}
                 {/* Fixed Fan Stack - Animated Shuffle */}
                 <div className="relative w-full h-[400px] md:h-[500px] flex justify-center items-center">
@@ -160,18 +160,21 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
             </div>
 
             {/* 2. DYNAMIC TEXT SECTION (Changes based on step) */}
-            <div className="flex-none w-full px-8 pb-12 text-center transition-opacity duration-300 z-50">
+            <div className="flex-none w-full px-8 pb-4 text-center transition-opacity duration-300 z-50">
                 <div key={currentStep} className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-                    <h2 className={`text-2xl font-bold text-white mb-4 ${currentStep === 0 ? pixelFont.className + " tracking-widest leading-relaxed" : ""}`}>
+                    <h2 className={`text-2xl font-bold text-white mb-2 ${currentStep === 0 ? pixelFont.className + " tracking-widest leading-relaxed" : ""}`}>
                         {steps[currentStep].title}
                     </h2>
-                    <p className="text-zinc-400 text-base leading-relaxed max-w-[300px] mx-auto h-16">
+                    <p className={`text-zinc-400 leading-relaxed mx-auto h-16 flex items-center justify-center ${currentStep === 0
+                            ? "text-sm whitespace-nowrap tracking-tight max-w-none"
+                            : "text-base max-w-[300px]"
+                        }`}>
                         {steps[currentStep].description}
                     </p>
                 </div>
 
                 {/* 3. DOTS INDICATOR */}
-                <div className="flex justify-center gap-2 mt-6 mb-8">
+                <div className="flex justify-center gap-2 mt-4 mb-6">
                     {steps.map((_, idx) => (
                         <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentStep ? 'w-6 bg-[#F9DE4B]' : 'w-1.5 bg-zinc-700'}`} />
                     ))}

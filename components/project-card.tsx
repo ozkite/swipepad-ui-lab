@@ -163,28 +163,28 @@ export function ProjectCard({
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0F1729] to-transparent z-10" />
       </div>
 
-      {/* 2. Info Chin (Bottom ~40%) */}
-      <div className="absolute bottom-0 left-0 right-0 h-[42%] bg-slate-900/95 backdrop-blur-sm rounded-t-[32px] z-20 flex flex-col px-5 pt-4 pb-4 border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] justify-between">
+      {/* 2. Info Chin (Bottom ~40%) - Squashed */}
+      <div className="absolute bottom-0 left-0 right-0 h-auto min-h-[35%] max-h-[40%] bg-slate-900/95 backdrop-blur-sm rounded-t-[28px] z-20 flex flex-col px-4 pt-3 pb-2 border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] justify-between">
 
-        <div className="flex-1 flex flex-col gap-1 min-h-0">
+        <div className="flex-1 flex flex-col gap-0.5 min-h-0">
           {/* Header: Name + Verification */}
-          <div className="flex items-center gap-2 mb-0.5 shrink-0">
-            <h2 className="text-lg font-bold text-white tracking-wide truncate leading-tight">{project.name}</h2>
-            {project.verified && <Zap className="w-4 h-4 text-[#FFD600] fill-current shrink-0" />}
+          <div className="flex items-center gap-1.5 mb-0 shrink-0">
+            <h2 className="text-base font-bold text-white tracking-wide truncate leading-tight">{project.name}</h2>
+            {project.verified && <Zap className="w-3.5 h-3.5 text-[#FFD600] fill-current shrink-0" />}
           </div>
 
-          {/* Description (Truncated) - Allows slight variable height but constrained */}
-          <div className="relative overflow-hidden">
-            <p className="text-xs text-gray-400 font-normal leading-relaxed line-clamp-2">
+          {/* Description (Truncated) */}
+          <div className="relative overflow-hidden mb-1">
+            <p className="text-[11px] text-gray-400 font-normal leading-snug line-clamp-2">
               {project.description}
             </p>
           </div>
         </div>
 
-        {/* Meta Row: Socials + Boost Button - Pinned via justify-between structure */}
-        <div className="flex items-center justify-between mb-3 mt-1 shrink-0">
+        {/* Meta Row: Socials + Boost Button */}
+        <div className="flex items-center justify-between mb-1 mt-1 shrink-0">
           {/* Left: Social Icons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {socialLinks.map(({ key, icon: Icon, url }) => (
               url && url !== "NA" && (
                 <button
@@ -192,7 +192,7 @@ export function ProjectCard({
                   onClick={(e) => handleExternalLink(e, url)}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-4 h-4" />
                 </button>
               )
             ))}
@@ -201,9 +201,9 @@ export function ProjectCard({
           {/* Right: New Small Boost Button */}
           <button
             onClick={(e) => handleAction(e, onBoost)}
-            className="flex items-center gap-1.5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white text-xs font-bold transition-all shadow-lg hover:shadow-indigo-500/50 animate-pulse border border-indigo-400/30"
+            className="flex items-center gap-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white text-[10px] font-bold transition-all shadow-lg hover:shadow-indigo-500/50 animate-pulse border border-indigo-400/30"
           >
-            <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-sm">🚀</span>
+            <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-xs">🚀</span>
             Boost
           </button>
         </div>
