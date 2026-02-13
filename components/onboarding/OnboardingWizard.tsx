@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform, useAnimation } f
 import confetti from "canvas-confetti"
 import { ArrowRight } from "lucide-react"
 import { Press_Start_2P } from "next/font/google"
-import { FloatingHero } from "./FloatingHero"
+import { CardFan } from "./CardFan"
 import { SwipeDemo } from "./SwipeDemo"
 import { LeaderboardGraphic } from "./LeaderboardGraphic"
 
@@ -20,7 +20,7 @@ const slides = [
     {
         title: "Welcome to SwipePad",
         subtext: "Easy Login to explore vetted projects.",
-        component: <FloatingHero />,
+        component: <CardFan />,
     },
     {
         title: "Swipe and Discover",
