@@ -16,9 +16,9 @@ export function CategoryFilter({ selectedCategory, onSelectCategory }: CategoryF
                 <button
                     key={category}
                     onClick={() => onSelectCategory(category === "See All" ? "All" : category)}
-                    className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${(category === "See All" && selectedCategory === "All") || category === selectedCategory
-                            ? "bg-[#F9DE4B] text-black shadow-lg shadow-yellow-900/20"
-                            : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                    className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${(category === "See All" ? selectedCategory === "All" : category === selectedCategory)
+                        ? "bg-[#F9DE4B] text-black shadow-lg shadow-yellow-900/20"
+                        : "bg-gray-800 text-gray-400 hover:bg-gray-700"
                         }`}
                 >
                     {category}

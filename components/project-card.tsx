@@ -81,6 +81,7 @@ export interface ProjectCardData {
     website?: string
     linkedin?: string
   }
+  verified?: boolean
 }
 
 interface ProjectCardProps {
@@ -163,23 +164,25 @@ export function ProjectCard({
       </div>
 
       {/* 2. Info Chin (Bottom ~40%) */}
-      <div className="absolute bottom-0 left-0 right-0 h-[42%] bg-slate-900/95 backdrop-blur-sm rounded-t-[32px] z-20 flex flex-col px-5 pt-5 pb-4 border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+      <div className="absolute bottom-0 left-0 right-0 h-[42%] bg-slate-900/95 backdrop-blur-sm rounded-t-[32px] z-20 flex flex-col px-5 pt-4 pb-4 border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] justify-between">
 
-        {/* Header: Name + Verification */}
-        <div className="flex items-center gap-2 mb-1">
-          <h2 className="text-2xl font-bold text-white tracking-wide truncate">{project.name}</h2>
-          <Zap className="w-5 h-5 text-[#FFD600] fill-current" />
+        <div className="flex-1 flex flex-col gap-1 min-h-0">
+          {/* Header: Name + Verification */}
+          <div className="flex items-center gap-2 mb-0.5 shrink-0">
+            <h2 className="text-lg font-bold text-white tracking-wide truncate leading-tight">{project.name}</h2>
+            {project.verified && <Zap className="w-4 h-4 text-[#FFD600] fill-current shrink-0" />}
+          </div>
+
+          {/* Description (Truncated) - Allows slight variable height but constrained */}
+          <div className="relative overflow-hidden">
+            <p className="text-xs text-gray-400 font-normal leading-relaxed line-clamp-2">
+              {project.description}
+            </p>
+          </div>
         </div>
 
-
-
-        {/* Description (Truncated) */}
-        <p className="text-xs text-gray-400 font-normal leading-relaxed line-clamp-2 mb-3">
-          {project.description}
-        </p>
-
-        {/* Meta Row: Socials + Boost Button */}
-        <div className="flex items-center justify-between mb-auto mt-1">
+        {/* Meta Row: Socials + Boost Button - Pinned via justify-between structure */}
+        <div className="flex items-center justify-between mb-3 mt-1 shrink-0">
           {/* Left: Social Icons */}
           <div className="flex items-center gap-3">
             {socialLinks.map(({ key, icon: Icon, url }) => (
@@ -205,35 +208,34 @@ export function ProjectCard({
           </button>
         </div>
 
-        {/* Action Area */}
-        <div className="mt-2">
-          <div className="flex items-center justify-between gap-3">
-            {/* Skip (Left) */}
-            <button
-              onClick={(e) => handleAction(e, onSwipeLeft)}
-              className="flex-1 py-3 rounded-xl bg-slate-800/50 border border-slate-700 flex items-center justify-center gap-2 text-gray-400 hover:text-white hover:bg-slate-800 transition-all"
-            >
-              <X className="w-4 h-4" />
-              <span className="text-sm font-bold">Skip</span>
-            </button>
+        {/* Action Area (New 3-Button Layout) */}
+        {/* Action Area (Pill-shaped 3-Button Layout) */}
+        <div className="flex items-center justify-between gap-4 pb-4 mt-2 px-2">
+          {/* Skip (Left) */}
+          <button
+            onClick={(e) => handleAction(e, onSwipeLeft)}
+            className="flex-1 h-14 bg-zinc-800 hover:bg-zinc-700 text-white rounded-[32px] flex items-center justify-center gap-2 transition-all active:scale-95 border border-zinc-700/50 shadow-lg"
+          >
+            <X className="w-6 h-6" />
+            <span className="text-lg font-medium">Skip</span>
+          </button>
 
-            {/* Rewind (Center) */}
-            <button
-              onClick={(e) => handleAction(e, onRewind)}
-              className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-blue-400 hover:text-blue-300 hover:bg-slate-700 transition-colors border border-slate-700 shrink-0"
-            >
-              <RotateCcw className="w-5 h-5" />
-            </button>
+          {/* Revert (Center) */}
+          <button
+            onClick={(e) => handleAction(e, onRewind)}
+            className="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 text-blue-400 rounded-full flex items-center justify-center transition-all active:scale-95 shrink-0 border border-zinc-700/50 shadow-md"
+          >
+            <RotateCcw className="w-5 h-5" />
+          </button>
 
-            {/* Like (Right) */}
-            <button
-              onClick={(e) => handleAction(e, onSwipeRight)}
-              className="flex-[1.5] py-3 rounded-xl bg-[#FFD600] flex items-center justify-center gap-2 text-black hover:bg-[#F7CE00] transition-colors shadow-lg shadow-yellow-500/10 active:scale-95"
-            >
-              <ThumbsUp className="w-5 h-5 fill-black" />
-              <span className="text-base font-bold">Like</span>
-            </button>
-          </div>
+          {/* Like (Right) */}
+          <button
+            onClick={(e) => handleAction(e, onSwipeRight)}
+            className="flex-1 h-14 bg-[#F9DE4B] hover:bg-[#F7CE00] text-black rounded-[32px] flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-yellow-900/10"
+          >
+            <ThumbsUp className="w-6 h-6 stroke-[2.5px]" />
+            <span className="text-lg font-medium">Like</span>
+          </button>
         </div>
 
       </div>

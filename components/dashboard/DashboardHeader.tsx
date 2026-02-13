@@ -41,7 +41,7 @@ export function DashboardHeader({
             {/* Zone 1: Header Row */}
             <div className="flex items-center justify-between px-4 mb-4">
                 {/* Left: Logo */}
-                <h1 className={`${pixelFont.className} text-white text-base tracking-widest`}>
+                <h1 className={`${pixelFont.className} text-white text-xs tracking-widest`}>
                     SwipePad
                 </h1>
 
@@ -109,18 +109,18 @@ export function DashboardHeader({
             </div>
 
             {/* Zone 2: Filter Row */}
-            <div className="w-full flex flex-nowrap overflow-x-auto scrollbar-hide mb-6 no-scrollbar touch-pan-x">
-                <div className="flex items-center gap-3 px-4 pr-6 min-w-max">
+            <div className="w-full flex flex-nowrap overflow-x-auto scrollbar-hide mb-1 no-scrollbar touch-pan-x">
+                <div className="flex items-center gap-2 px-4 pr-6 min-w-max">
                     {categories.map((category) => {
-                        const isSelected = (category === "See All" && selectedCategory === "Regeneration" || selectedCategory === "All") || category === selectedCategory
+                        const isSelected = category === selectedCategory
 
                         return (
                             <button
                                 key={category}
-                                onClick={() => onSelectCategory(category === "See All" ? "All" : category)}
-                                className={`whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-bold transition-all border shrink-0 ${isSelected
+                                onClick={() => onSelectCategory(category)}
+                                className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold transition-all border shrink-0 ${isSelected
                                     ? "bg-[#F9DE4B] text-black border-[#F9DE4B]"
-                                    : "bg-gray-800 text-gray-400 border-gray-700 hover:bg-gray-700"
+                                    : "bg-zinc-800/50 text-zinc-400 border-zinc-700 hover:bg-zinc-700"
                                     }`}
                             >
                                 {category}
@@ -130,31 +130,18 @@ export function DashboardHeader({
                 </div>
             </div>
 
-            {/* Zone 3: Level Tracker */}
-            <div className="px-4 space-y-2">
-                {/* Row A: Level Info */}
-                <div className="flex items-center gap-3">
-                    <span className="bg-[#F9DE4B] text-black text-[10px] font-black px-1.5 py-0.5 rounded shadow-sm">
-                        LVL 1
-                    </span>
-                    <span className="text-gray-400 text-xs font-medium">
-                        <span className="text-gray-200 font-bold">{remaining}</span> swipes to next level
-                    </span>
-                </div>
-
-                {/* Row B: Progress Bar */}
-                <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                    <div
-                        className="h-full bg-[#F9DE4B] transition-all duration-300 ease-out rounded-full"
-                        style={{ width: `${progress}%` }}
-                    />
-                </div>
-
-                {/* Row C: Settings Footer */}
-                <div className="flex items-center justify-between pt-1">
-                    <span className="text-gray-500 text-xs font-medium">
-                        Donating <span className="text-[#F9DE4B] font-bold">{donationAmount} {currency}</span>
-                    </span>
+            {/* Zone 3: Level Tracker - Fixed Height Container */}
+            <div className="px-4 h-[42px] flex flex-col justify-end gap-1 mb-1">
+                {/* Row A: Level Info + Edit Amount */}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <span className="bg-[#F9DE4B] text-black text-[10px] font-black px-1.5 py-0.5 rounded shadow-sm">
+                            LVL 1
+                        </span>
+                        <span className="text-gray-400 text-xs font-medium">
+                            <span className="text-gray-200 font-bold">{remaining}</span> swipes to next level
+                        </span>
+                    </div>
 
                     <button
                         onClick={onEditAmount}
@@ -162,6 +149,14 @@ export function DashboardHeader({
                     >
                         Edit Amount
                     </button>
+                </div>
+
+                {/* Row B: Progress Bar */}
+                <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden shrink-0">
+                    <div
+                        className="h-full bg-[#F9DE4B] transition-all duration-300 ease-out rounded-full"
+                        style={{ width: `${progress}%` }}
+                    />
                 </div>
             </div>
 

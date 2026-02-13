@@ -20,46 +20,44 @@ import { ProjectRegistrationForm } from "@/components/project-registration-form"
 import { EditProfile } from "@/components/edit-profile"
 import { SettingsModal } from "@/components/modals/SettingsModal"
 import { BoostModal } from "@/components/modals/BoostModal"
+import { bCardsData, eCardsData, kCardsData } from "@/lib/real_data"
 import { shuffleArray } from "@/lib/utils"
-import bCards from "@/lib/b_cards.json"
-import eCards from "@/lib/e_cards.json"
-import kCards from "@/lib/k_cards.json"
-
 // Helper to normalize Builder data
 const normalizeBuilders = (data: any[]): Project[] => data.map((item, i) => ({
   id: `builder-${i}`,
-  name: item.name,
-  description: item.bio,
+  name: item.Name,
+  description: item.Description,
   category: "Social Impact",
   categoryType: "builders",
-  imageUrl: item.image,
+  imageUrl: item["Profile Image URL"],
   website: undefined,
-  twitter: undefined,
-  github: item.github,
-  farcaster: item.farcaster,
-  linkedin: item.linkedin,
+  twitter: item.Twitter || undefined,
+  github: item.GitHub || undefined,
+  farcaster: item.Farcaster || undefined,
+  linkedin: item.LinkedIn || undefined,
   fundingGoal: 0,
   fundingCurrent: 0,
   likes: 0,
   comments: 0,
-  walletAddress: item.wallet,
+  walletAddress: item["Wallet Address"],
   isBookmarked: false,
   userHasLiked: false,
   userHasCommented: false,
   reportCount: 0,
   boostAmount: 0,
+  verified: false,
 }))
 
-// Helper to normalize Eco/DApp data
-const normalizeProjects = (data: any[], type: 'eco' | 'dapps'): Project[] => data.map((item, i) => ({
-  id: `${type}-${i}`,
-  name: item["Name of Project"],
-  description: item["Description of Project"],
-  category: item.Category,
-  categoryType: type,
-  imageUrl: item["URL to Logo"],
-  website: item.Website,
-  twitter: item.Twitter,
+// Helper to normalize Eco data
+const normalizeEco = (data: any[]): Project[] => data.map((item, i) => ({
+  id: `eco-${i}`,
+  name: item["Project Name"],
+  description: item.Description,
+  category: "Eco",
+  categoryType: "eco",
+  imageUrl: item["Image url"],
+  website: item.Website || undefined,
+  twitter: undefined,
   github: undefined,
   farcaster: undefined,
   linkedin: undefined,
@@ -67,12 +65,39 @@ const normalizeProjects = (data: any[], type: 'eco' | 'dapps'): Project[] => dat
   fundingCurrent: 0,
   likes: 0,
   comments: 0,
-  walletAddress: undefined,
+  walletAddress: item.Wallet,
   isBookmarked: false,
   userHasLiked: false,
   userHasCommented: false,
   reportCount: 0,
   boostAmount: 0,
+  verified: false,
+}))
+
+// Helper to normalize DApps/Projects data
+const normalizeDapps = (data: any[]): Project[] => data.map((item, i) => ({
+  id: `dapp-${i}`,
+  name: item.project_name,
+  description: item.Description,
+  category: "DApps",
+  categoryType: "dapps",
+  imageUrl: item.project_image,
+  website: item.website || item.project_url || undefined,
+  twitter: item.twitter || undefined,
+  github: item.github || undefined,
+  farcaster: item.farcaster || undefined,
+  linkedin: item.linkedin || undefined,
+  fundingGoal: 0,
+  fundingCurrent: 0,
+  likes: 0,
+  comments: 0,
+  walletAddress: item.wallet_address,
+  isBookmarked: false,
+  userHasLiked: false,
+  userHasCommented: false,
+  reportCount: 0,
+  boostAmount: 0,
+  verified: false,
 }))
 
 export default function Home() {
@@ -90,6 +115,9 @@ export default function Home() {
   const [donationCurrency, setDonationCurrency] = useState<StableCoin>("cUSD")
   const [confirmSwipes, setConfirmSwipes] = useState<ConfirmSwipes>(20)
   const [swipeCount, setSwipeCount] = useState(0)
+
+  // Data Fetching State
+  const [loading, setLoading] = useState(true)
 
   // Profile Stats
   const [userStats, setUserStats] = useState({
@@ -125,31 +153,49 @@ export default function Home() {
 
   const [selectedCategory, setSelectedCategory] = useState("See All")
 
-  // ... (existing imports)
-
-  // ... (inside component)
-
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
 
+  // FETCH DATA ON MOUNT
   useEffect(() => {
+    // Instead of fetch, we just simulate a brief load and use imported data
+    const prepareData = async () => {
+      // Initial Shuffle of All
+      const allProjects = [
+        ...normalizeBuilders(bCardsData),
+        ...normalizeEco(eCardsData),
+        ...normalizeDapps(kCardsData)
+      ]
+      setFilteredProjects(shuffleArray(allProjects))
+      setLoading(false)
+    }
+    prepareData()
+  }, [])
+
+  // SHUFFLE & FILTER EFFECT
+  useEffect(() => {
+    if (loading) return
+
     let filtered: Project[] = []
+
+    // Normalize and Combine based on Category
     if (selectedCategory === "See All" || selectedCategory === "All") {
       filtered = [
-        ...normalizeBuilders(bCards),
-        ...normalizeProjects(eCards, "eco"),
-        ...normalizeProjects(kCards, "dapps")
+        ...normalizeBuilders(bCardsData),
+        ...normalizeEco(eCardsData),
+        ...normalizeDapps(kCardsData)
       ]
     } else if (selectedCategory === "Builders") {
-      filtered = normalizeBuilders(bCards)
+      filtered = normalizeBuilders(bCardsData)
     } else if (selectedCategory === "Eco Projects") {
-      filtered = normalizeProjects(eCards, "eco")
+      filtered = normalizeEco(eCardsData)
     } else if (selectedCategory === "DApps") {
-      filtered = normalizeProjects(kCards, "dapps")
+      filtered = normalizeDapps(kCardsData)
     }
 
+    // ALWAYS SHUFFLE on category change
     setFilteredProjects(shuffleArray(filtered))
     setCurrentProjectIndex(0)
-  }, [selectedCategory])
+  }, [selectedCategory, loading])
 
   const hasLoaded = useRef(false)
 
@@ -275,7 +321,7 @@ export default function Home() {
       />
 
       {/* Main Content Area - Scrollable or Swipable */}
-      <div className="flex-1 overflow-hidden pb-20 relative flex flex-col">
+      <div className="flex-1 overflow-hidden relative flex flex-col min-h-0">
         {!walletConnected ? (
           <div className="h-full flex items-center justify-center p-6">
             <WalletConnect onConnect={() => setWalletConnected(true)} />
@@ -301,8 +347,8 @@ export default function Home() {
 
                 <div className="flex-1 relative flex flex-col px-4 pt-1">
 
-                  {/* Zone 4: The Swipe Deck (Card V2) */}
-                  <div className="flex-1 flex items-center justify-center">
+                  {/* Zone 4: The Swipe Deck (Fixed Spacing, Top Anchored) */}
+                  <div className="flex-1 flex justify-center pt-4">
                     <SwipeDeck
                       projects={filteredProjects}
                       activeIndex={currentProjectIndex}
