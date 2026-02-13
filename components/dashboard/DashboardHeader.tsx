@@ -109,8 +109,8 @@ export function DashboardHeader({
             </div>
 
             {/* Zone 2: Filter Row */}
-            <div className="w-full overflow-x-auto scrollbar-hide mb-6 relative">
-                <div className="flex items-center gap-3 px-4 min-w-max">
+            <div className="w-full flex flex-nowrap overflow-x-auto scrollbar-hide mb-6 no-scrollbar touch-pan-x">
+                <div className="flex items-center gap-3 px-4 pr-6 min-w-max">
                     {categories.map((category) => {
                         const isSelected = (category === "See All" && selectedCategory === "Regeneration" || selectedCategory === "All") || category === selectedCategory
 
@@ -118,7 +118,7 @@ export function DashboardHeader({
                             <button
                                 key={category}
                                 onClick={() => onSelectCategory(category === "See All" ? "All" : category)}
-                                className={`whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-bold transition-all border ${isSelected
+                                className={`whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-bold transition-all border shrink-0 ${isSelected
                                     ? "bg-[#F9DE4B] text-black border-[#F9DE4B]"
                                     : "bg-gray-800 text-gray-400 border-gray-700 hover:bg-gray-700"
                                     }`}
@@ -158,7 +158,7 @@ export function DashboardHeader({
 
                     <button
                         onClick={onEditAmount}
-                        className="text-indigo-400 text-xs font-bold hover:text-indigo-300 transition-colors"
+                        className="text-indigo-400 text-[10px] font-bold hover:text-indigo-300 transition-colors uppercase tracking-wide"
                     >
                         Edit Amount
                     </button>

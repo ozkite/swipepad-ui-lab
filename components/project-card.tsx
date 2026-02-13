@@ -3,9 +3,9 @@
 import type React from "react"
 import { Heart, MessageCircle, Flag, Zap, RotateCcw, ThumbsUp, X, Share2, MoreVertical, Rocket } from "lucide-react"
 import { motion } from "framer-motion"
-import type { Project } from "@/lib/data"
 
 // -- Icon Components reused --
+// Note: XIcon here is the Twitter/X logo, not the close button.
 function XIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -67,8 +67,24 @@ function FarcasterIcon({ className }: { className?: string }) {
 
 // -- Main Component --
 
+export interface ProjectCardData {
+  id: string
+  name: string
+  image: string
+  description: string
+  category: string
+  categoryType?: 'builders' | 'eco' | 'dapps'
+  socials: {
+    github?: string
+    farcaster?: string
+    twitter?: string // X
+    website?: string
+    linkedin?: string
+  }
+}
+
 interface ProjectCardProps {
-  project: Project
+  project: ProjectCardData
   onSwipeLeft?: () => void
   onSwipeRight?: () => void
   onRewind?: () => void
@@ -100,18 +116,49 @@ export function ProjectCard({
     window.open(url, "_blank", "noopener,noreferrer")
   }
 
+  const socialLinks = [
+    { key: 'github', icon: GitHubIcon, url: project.socials?.github },
+    { key: 'farcaster', icon: FarcasterIcon, url: project.socials?.farcaster },
+    { key: 'twitter', icon: XIcon, url: project.socials?.twitter },
+    { key: 'website', icon: WebsiteIcon, url: project.socials?.website },
+    { key: 'linkedin', icon: LinkedInIcon, url: project.socials?.linkedin },
+  ]
+
+  const getCategoryStyles = (type?: string) => {
+    switch (type) {
+      case 'builders':
+        return { text: "BUILDERS", className: "bg-blue-600/90" }
+      case 'eco':
+        return { text: "ECO PROJECT", className: "bg-emerald-600/90" }
+      case 'dapps':
+        return { text: "DAPP", className: "bg-purple-600/90" }
+      default:
+        return { text: "VERIFIED", className: "bg-slate-600/90" }
+    }
+  }
+
+  const badgeStyle = getCategoryStyles(project.categoryType)
+
   return (
     <div className="relative w-full h-full rounded-[32px] overflow-hidden shadow-2xl bg-[#0F1729] flex flex-col disable-touch-callout select-none border border-gray-800">
 
       {/* 1. Full Bleed Image (Top ~60%) */}
       {/* Adjusted height to make room for larger chin with boost button */}
-      <div className="absolute top-0 left-0 w-full h-[60%] z-0 bg-black">
+      <div className="absolute top-0 left-0 w-full h-[60%] z-0 bg-slate-900">
         <img
-          src={project.imageUrl && project.imageUrl !== "NA" ? project.imageUrl : `/placeholder.svg?height=600&width=400&text=${project.name}`}
+          src={project.image && project.image !== "NA" ? project.image : `/placeholder.svg?height=600&width=400&text=${project.name}`}
           alt={project.name}
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover absolute inset-0"
           draggable={false}
         />
+
+        {/* Category Badge */}
+        <div className={`absolute top-4 left-4 z-10 ${badgeStyle.className} text-white font-bold text-[10px] uppercase tracking-wider px-3 py-1 shadow-sm rounded-full`}>
+          <span>
+            {badgeStyle.text}
+          </span>
+        </div>
+
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0F1729] to-transparent z-10" />
       </div>
 
@@ -124,40 +171,36 @@ export function ProjectCard({
           <Zap className="w-5 h-5 text-[#FFD600] fill-current" />
         </div>
 
-        {/* Subtext: Job/Category */}
-        <p className="text-sm text-gray-400 font-medium tracking-wide mb-1 uppercase flex items-center gap-2">
-          <span className="bg-slate-800 px-2 py-0.5 rounded text-[10px] text-white/70">{project.category}</span>
-          <span>•</span>
-          <span>Verified Builder</span>
+
+
+        {/* Description (Truncated) */}
+        <p className="text-xs text-gray-400 font-normal leading-relaxed line-clamp-2 mb-3">
+          {project.description}
         </p>
 
         {/* Meta Row: Socials + Boost Button */}
-        <div className="flex items-center justify-between mb-auto mt-2">
+        <div className="flex items-center justify-between mb-auto mt-1">
           {/* Left: Social Icons */}
           <div className="flex items-center gap-3">
-            {project.github && project.github !== "NA" && (
-              <button onClick={(e) => handleExternalLink(e, project.github as string)} className="text-gray-400 hover:text-white transition-colors">
-                <GitHubIcon className="w-5 h-5" />
-              </button>
-            )}
-            {project.farcaster && project.farcaster !== "NA" && (
-              <button onClick={(e) => handleExternalLink(e, project.farcaster as string)} className="text-gray-400 hover:text-white transition-colors">
-                <FarcasterIcon className="w-5 h-5" />
-              </button>
-            )}
-            {project.website && project.website !== "NA" && (
-              <button onClick={(e) => handleExternalLink(e, project.website as string)} className="text-gray-400 hover:text-white transition-colors">
-                <WebsiteIcon className="w-5 h-5" />
-              </button>
-            )}
+            {socialLinks.map(({ key, icon: Icon, url }) => (
+              url && url !== "NA" && (
+                <button
+                  key={key}
+                  onClick={(e) => handleExternalLink(e, url)}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <Icon className="w-5 h-5" />
+                </button>
+              )
+            ))}
           </div>
 
           {/* Right: New Small Boost Button */}
           <button
             onClick={(e) => handleAction(e, onBoost)}
-            className="flex items-center gap-1.5 px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white text-xs font-bold transition-all shadow-lg hover:shadow-indigo-500/50 animate-pulse"
+            className="flex items-center gap-1.5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white text-xs font-bold transition-all shadow-lg hover:shadow-indigo-500/50 animate-pulse border border-indigo-400/30"
           >
-            <Rocket className="w-3.5 h-3.5 fill-current" />
+            <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-sm">🚀</span>
             Boost
           </button>
         </div>

@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from "framer-motion"
 import { SwipeDeck } from "@/components/swipe/SwipeDeck"
 import { TopBar } from "@/components/layout/TopBar"
 import { BottomNav } from "@/components/layout/BottomNav"
-import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard" // Import
+import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard"
 import { SuccessScreen } from "@/components/success-screen"
 import { WalletConnect } from "@/components/wallet-connect"
 import { AmountSelector, type DonationAmount, type StableCoin, type ConfirmSwipes } from "@/components/amount-selector"
-import { projects, categories, type Project } from "@/lib/data"
+import { projects as allProjects, categories, type Project } from "@/lib/data"
 import { UserProfile } from "@/components/user-profile"
 import { TrendingSection } from "@/components/trending-section"
 import { StarryBackground } from "@/components/starry-background"
@@ -20,20 +20,73 @@ import { ProjectRegistrationForm } from "@/components/project-registration-form"
 import { EditProfile } from "@/components/edit-profile"
 import { SettingsModal } from "@/components/modals/SettingsModal"
 import { BoostModal } from "@/components/modals/BoostModal"
+import { shuffleArray } from "@/lib/utils"
+import bCards from "@/lib/b_cards.json"
+import eCards from "@/lib/e_cards.json"
+import kCards from "@/lib/k_cards.json"
+
+// Helper to normalize Builder data
+const normalizeBuilders = (data: any[]): Project[] => data.map((item, i) => ({
+  id: `builder-${i}`,
+  name: item.name,
+  description: item.bio,
+  category: "Social Impact",
+  categoryType: "builders",
+  imageUrl: item.image,
+  website: undefined,
+  twitter: undefined,
+  github: item.github,
+  farcaster: item.farcaster,
+  linkedin: item.linkedin,
+  fundingGoal: 0,
+  fundingCurrent: 0,
+  likes: 0,
+  comments: 0,
+  walletAddress: item.wallet,
+  isBookmarked: false,
+  userHasLiked: false,
+  userHasCommented: false,
+  reportCount: 0,
+  boostAmount: 0,
+}))
+
+// Helper to normalize Eco/DApp data
+const normalizeProjects = (data: any[], type: 'eco' | 'dapps'): Project[] => data.map((item, i) => ({
+  id: `${type}-${i}`,
+  name: item["Name of Project"],
+  description: item["Description of Project"],
+  category: item.Category,
+  categoryType: type,
+  imageUrl: item["URL to Logo"],
+  website: item.Website,
+  twitter: item.Twitter,
+  github: undefined,
+  farcaster: undefined,
+  linkedin: undefined,
+  fundingGoal: 0,
+  fundingCurrent: 0,
+  likes: 0,
+  comments: 0,
+  walletAddress: undefined,
+  isBookmarked: false,
+  userHasLiked: false,
+  userHasCommented: false,
+  reportCount: 0,
+  boostAmount: 0,
+}))
 
 export default function Home() {
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false) // New State
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false)
   const [viewMode, setViewMode] = useState<"swipe" | "trending" | "list" | "profile" | "wallet">("swipe")
   const [showSettings, setShowSettings] = useState(false)
-  const [showBoostModal, setShowBoostModal] = useState(false) // New State
-  const [selectedCategory, setSelectedCategory] = useState(categories[0] || "Regeneration")
+  const [showBoostModal, setShowBoostModal] = useState(false)
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0)
 
   // Cart & checkout state
   const [cart, setCart] = useState<Array<{ project: any; amount: number; currency: StableCoin; message?: string }>>([])
   const [showSuccess, setShowSuccess] = useState(false)
   const [walletConnected, setWalletConnected] = useState(false)
-  const [donationAmount, setDonationAmount] = useState<DonationAmount>("0.01\u00A2")
+  const [donationAmount, setDonationAmount] = useState<DonationAmount>("0.01¢")
   const [donationCurrency, setDonationCurrency] = useState<StableCoin>("cUSD")
   const [confirmSwipes, setConfirmSwipes] = useState<ConfirmSwipes>(20)
   const [swipeCount, setSwipeCount] = useState(0)
@@ -50,7 +103,7 @@ export default function Home() {
     name: "Crypto Philanthropist",
     handle: "@regendegen",
     avatar: "/placeholder.svg?height=100&width=100",
-    image: "/placeholder.svg?height=100&width=100", // Fix for type compatibility
+    image: "/placeholder.svg?height=100&width=100",
     bio: "Supporting regenerative projects one swipe at a time. 🌱",
     totalSwipes: 47,
     projectsReported: 3,
@@ -70,7 +123,33 @@ export default function Home() {
   const [showRegistrationForm, setShowRegistrationForm] = useState(false)
   const [showEditProfile, setShowEditProfile] = useState(false)
 
-  const filteredProjects = projects.filter((project) => project.category === selectedCategory)
+  const [selectedCategory, setSelectedCategory] = useState("See All")
+
+  // ... (existing imports)
+
+  // ... (inside component)
+
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
+
+  useEffect(() => {
+    let filtered: Project[] = []
+    if (selectedCategory === "See All" || selectedCategory === "All") {
+      filtered = [
+        ...normalizeBuilders(bCards),
+        ...normalizeProjects(eCards, "eco"),
+        ...normalizeProjects(kCards, "dapps")
+      ]
+    } else if (selectedCategory === "Builders") {
+      filtered = normalizeBuilders(bCards)
+    } else if (selectedCategory === "Eco Projects") {
+      filtered = normalizeProjects(eCards, "eco")
+    } else if (selectedCategory === "DApps") {
+      filtered = normalizeProjects(kCards, "dapps")
+    }
+
+    setFilteredProjects(shuffleArray(filtered))
+    setCurrentProjectIndex(0)
+  }, [selectedCategory])
 
   const hasLoaded = useRef(false)
 
@@ -127,13 +206,8 @@ export default function Home() {
     })
 
     // Add to cart logic
-    // If donation amount is null, maybe just count as a "Like" without adding to cart?
-    // Or prompt? For now, let's just log it if null, else add to cart.
     if (donationAmount) {
       const numericAmount = parseFloat(donationAmount) || 0
-      // We need to match the cart type structure or update it.
-      // The cart state type is { project: any; amount: number; currency: StableCoin; message?: string }
-      // This matches numericAmount.
       const newCart = [...cart, { project, amount: numericAmount, currency: donationCurrency }]
       setCart(newCart)
     }
@@ -180,9 +254,6 @@ export default function Home() {
     setSwipeCount(0)
   }
 
-  // Handler cleanup: handleRegisterProject and handleRegistrationSubmit were previously duplicated/conflicting.
-  // Correct handlers are defined above as handleOpenRegistration and handleRegistrationSubmit.
-
   const AppContent = () => (
     <div className="w-full h-full flex flex-col bg-transparent relative">
       {/* Onboarding Wizard Overlay */}
@@ -198,7 +269,7 @@ export default function Home() {
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
         onSave={handleSettingsSave}
-        initialAmount={donationAmount || "0.01\u00A2"}
+        initialAmount={donationAmount || "0.01¢"}
         initialCurrency={donationCurrency}
         initialSwipes={confirmSwipes}
       />
@@ -216,12 +287,12 @@ export default function Home() {
 
                 {/* NEW Dashboard Header (Zones 1, 2, 3) */}
                 <DashboardHeader
-                  donationAmount={donationAmount || "0.01\u00A2"}
+                  donationAmount={donationAmount || "0.01¢"}
                   currency={donationCurrency}
                   currentSwipes={swipeCount}
                   targetSwipes={confirmSwipes}
-                  selectedCategory={selectedCategory === "Regeneration" ? "See All" : selectedCategory}
-                  onSelectCategory={(cat) => setSelectedCategory(cat === "All" ? "Regeneration" : cat)}
+                  selectedCategory={selectedCategory}
+                  onSelectCategory={(cat) => setSelectedCategory(cat)}
                   onEditAmount={() => setShowSettings(true)}
                   onOpenNotifications={() => console.log("Notifications")}
                   onOpenCart={() => console.log("Cart")}
@@ -311,4 +382,3 @@ export default function Home() {
     </main>
   )
 }
-

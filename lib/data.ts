@@ -20,6 +20,7 @@ export interface Project {
   userHasCommented?: boolean
   reportCount?: number
   boostAmount?: number
+  categoryType?: 'builders' | 'eco' | 'dapps'
 }
 
 // Celo Builders projects from the JSON

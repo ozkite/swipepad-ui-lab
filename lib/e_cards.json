@@ -1,0 +1,26 @@
+[
+    {
+        "Name of Project": "12 Butterflies",
+        "Description of Project": "Having one central location to allow all to access the wisdom and solutions required to fix these pressing issues",
+        "Website": "https://12butterflies.earth",
+        "Twitter": "https://twitter.com/12butterflies_",
+        "URL to Logo": "https://res.cloudinary.com/db7zzjmcj/image/upload/v1757703013/12_Butterflies_lzrora.jpg",
+        "Category": "Regeneration"
+    },
+    {
+        "Name of Project": "1Planet",
+        "Description of Project": "Broker to bring offsets on-chain and sell them as a 1Planet token with a web2 type login.",
+        "Website": "https://1planet.org",
+        "Twitter": null,
+        "URL to Logo": "https://res.cloudinary.com/db7zzjmcj/image/upload/v1757703013/1Planet_u1he25.png",
+        "Category": "Climate Action"
+    },
+    {
+        "Name of Project": "AgroforestDAO",
+        "Description of Project": "We are a movement with the purpose of building a support network that connects stewards.",
+        "Website": "https://agroforestdao.org",
+        "Twitter": "https://x.com/agroforestdao",
+        "URL to Logo": "https://res.cloudinary.com/db7zzjmcj/image/upload/v1757703015/AgroforestDAO_d8pp0q.png",
+        "Category": "Nature"
+    }
+]

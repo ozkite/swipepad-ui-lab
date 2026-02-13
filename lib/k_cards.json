@@ -1,0 +1,26 @@
+[
+    {
+        "Name of Project": "Acumen Research Labs",
+        "Description of Project": "Democratizing Space finance through a Space Investment DAO",
+        "Website": "https://acumenresearch.io/",
+        "Twitter": null,
+        "URL to Logo": "https://res.cloudinary.com/db7zzjmcj/image/upload/v1757703013/Acumen_Research_Labs_ooalfp.jpg",
+        "Category": "Open Source"
+    },
+    {
+        "Name of Project": "Blockchain x Climate Leadership Network",
+        "Description of Project": "BxC is an activist-to-industry network of global stakeholders working together.",
+        "Website": "https://bxc.network",
+        "Twitter": "https://x.com/bxcnetwork",
+        "URL to Logo": "https://res.cloudinary.com/db7zzjmcj/image/upload/v1757703022/Blockchain_x_Climate_Leadership_Network_BxC_eyoy4s.png",
+        "Category": "Open Source"
+    },
+    {
+        "Name of Project": "Blocks.garden",
+        "Description of Project": "#MakeCryptoGreen, starting from ETH1 historical emissions, by turning blocks in the blockchain into pixels.",
+        "Website": "https://blocks.garden",
+        "Twitter": "https://x.com/blocks_garden",
+        "URL to Logo": "https://res.cloudinary.com/db7zzjmcj/image/upload/v1757703022/Blocks.garden_mubpjr.png",
+        "Category": "Open Source"
+    }
+]

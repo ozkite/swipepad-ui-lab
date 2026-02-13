@@ -11,9 +11,9 @@ interface BoostModalProps {
 }
 
 const presets = [
-    { amount: 1, label: "1 Day Exposure", value: "1 Day" },
-    { amount: 5, label: "1 Week Exposure", value: "1 Week", badge: "Best Value" },
-    { amount: 15, label: "1 Month Exposure", value: "1 Month" }
+    { amount: 1, duration: "1 Day" },
+    { amount: 5, duration: "1 Week", badge: "Best Value" },
+    { amount: 15, duration: "1 Month" }
 ]
 
 export function BoostModal({ isOpen, onClose, project }: BoostModalProps) {
@@ -79,25 +79,18 @@ export function BoostModal({ isOpen, onClose, project }: BoostModalProps) {
                                     <button
                                         key={preset.amount}
                                         onClick={() => setSelectedAmount(preset.amount)}
-                                        className={`relative flex flex-col items-center justify-center p-4 rounded-2xl border transition-all ${selectedAmount === preset.amount
-                                                ? "bg-slate-800 border-white/20 ring-2 ring-[#FFD600]"
-                                                : "bg-slate-800/50 border-slate-700 hover:bg-slate-800"
+                                        className={`relative flex flex-col items-center justify-center py-6 px-2 rounded-2xl border transition-all ${selectedAmount === preset.amount
+                                            ? "bg-slate-800 border-white/20 ring-2 ring-[#FFD600]"
+                                            : "bg-slate-800/50 border-slate-700 hover:bg-slate-800"
                                             }`}
                                     >
                                         {preset.badge && (
-                                            <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[#FFD600] text-black text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
+                                            <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[#FFD600] text-black text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap z-10">
                                                 {preset.badge}
                                             </span>
                                         )}
                                         <span className="text-2xl font-bold text-white mb-1">${preset.amount}</span>
-                                        {/* <span className="text-[10px] text-gray-400 text-center leading-tight">{preset.label}</span> */}
-                                        {/* The visual reference only showed just the amount inside the box initially, 
-                                            but let's respect the "Option 1: $1 | 1 Day Exposure" requirement. 
-                                            However, the provided image shows just "$ 1" large inside. 
-                                            I'll stick to the provided visual reference of the boxes. 
-                                            Wait, the text says "Option 1: ... (Large Yellow text) | ... (Grey text)".
-                                            Let's put the info below or inside nicely. 
-                                        */}
+                                        <span className="text-xs text-zinc-400 font-medium">{preset.duration}</span>
                                     </button>
                                 ))}
                             </div>
@@ -106,8 +99,8 @@ export function BoostModal({ isOpen, onClose, project }: BoostModalProps) {
                             <button
                                 onClick={() => setSelectedAmount("custom")}
                                 className={`w-full py-4 rounded-xl border transition-all text-center font-medium ${selectedAmount === "custom"
-                                        ? "bg-slate-800 border-white/20 ring-2 ring-[#FFD600] text-white"
-                                        : "bg-slate-800/50 border-slate-700 text-gray-400 hover:bg-slate-800 hover:text-white"
+                                    ? "bg-slate-800 border-white/20 ring-2 ring-[#FFD600] text-white"
+                                    : "bg-slate-800/50 border-slate-700 text-gray-400 hover:bg-slate-800 hover:text-white"
                                     }`}
                             >
                                 Custom Amount

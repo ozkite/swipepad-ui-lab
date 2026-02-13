@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
-import { ProjectCard } from "@/components/project-card"
+import { ProjectCard, type ProjectCardData } from "@/components/project-card"
 import type { Project } from "@/lib/data"
 
 interface SwipeDeckProps {
@@ -20,6 +20,27 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
     // We show the active card and the next one for the stack effect
     const activeProject = projects[activeIndex]
     const nextProject = projects[activeIndex + 1]
+
+    // Map Project to ProjectCardData
+    const mappedProject: ProjectCardData | null = activeProject ? {
+        id: activeProject.id,
+        name: activeProject.name,
+        image: activeProject.imageUrl,
+        description: activeProject.description, // Pass description through
+        category: activeProject.category,
+        categoryType: activeProject.categoryType || (activeProject.category === "Regeneration" || activeProject.category === "Climate Action" || activeProject.category === "Nature"
+            ? 'eco'
+            : activeProject.category === "Social Impact" || activeProject.category === "Open Source"
+                ? 'builders'
+                : 'dapps'),
+        socials: {
+            github: activeProject.github,
+            farcaster: activeProject.farcaster,
+            twitter: activeProject.twitter,
+            website: activeProject.website,
+            linkedin: activeProject.linkedin
+        }
+    } : null
 
     // Framer Motion Swipe Logic
     const x = useMotionValue(0)
@@ -49,7 +70,7 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
         }),
     }
 
-    if (!activeProject) return <div className="text-center text-gray-500 py-10">No more projects!</div>
+    if (!mappedProject) return <div className="text-center text-gray-500 py-10">No more projects!</div>
 
     return (
         <div className="relative w-full max-w-sm mx-auto h-[600px] flex items-center justify-center">
@@ -63,7 +84,7 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
 
             <AnimatePresence initial={false} custom={exitDirection}>
                 <motion.div
-                    key={activeProject.id || activeIndex} // Use ID if available, else index
+                    key={mappedProject.id || activeIndex} // Use ID if available, else index
                     custom={exitDirection}
                     variants={variants}
                     initial="enter"
@@ -77,7 +98,7 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
                     className="absolute w-full h-full z-10 cursor-grab active:cursor-grabbing"
                 >
                     <ProjectCard
-                        project={activeProject}
+                        project={mappedProject}
                         onSwipeLeft={() => {
                             setExitDirection("left")
                             onSwipeLeft(activeIndex)
