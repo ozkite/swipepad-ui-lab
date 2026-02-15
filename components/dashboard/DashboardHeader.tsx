@@ -36,7 +36,7 @@ export function DashboardHeader({
     const remaining = Math.max(0, targetSwipes - currentSwipes)
 
     return (
-        <div className="flex flex-col w-full bg-[#0F1729] pb-0.5 pt-1">
+        <div className="flex flex-col w-full bg-zinc-950 pb-0.5 pt-1">
 
             {/* Zone 1: Header Row */}
             <div className="flex items-center justify-between px-4 mb-2">
@@ -118,28 +118,28 @@ export function DashboardHeader({
             </div>
 
             {/* Zone 3: Level Tracker - Compressed Height */}
-            <div className="px-4 h-auto flex flex-col justify-end gap-1 mb-0 pb-1">
+            <div className="px-4 h-auto flex flex-col justify-end gap-0.5 mb-0 pb-1 mt-3">
                 {/* Row A: Level Info + Edit Amount */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                <div className="flex items-end justify-between">
+                    <div className="flex items-center gap-2 mb-0.5">
                         <span className="bg-[#F9DE4B] text-black text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">
                             LVL 1
                         </span>
-                        <span className="text-gray-400 text-[10px] font-medium">
+                        <span className="text-gray-400 text-[10px] font-medium leading-none mb-px">
                             <span className="text-gray-200 font-bold">{remaining}</span> swipes to next level
                         </span>
                     </div>
 
                     <button
                         onClick={onEditAmount}
-                        className="text-indigo-400 text-[9px] font-bold hover:text-indigo-300 transition-colors uppercase tracking-wide"
+                        className="text-indigo-400 text-[9px] font-bold hover:text-indigo-300 transition-colors uppercase tracking-wide leading-none mb-px"
                     >
                         Edit Amount
                     </button>
                 </div>
 
                 {/* Row B: Progress Bar */}
-                <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden shrink-0 mt-0.5">
+                <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden shrink-0 mt-0">
                     <div
                         className="h-full bg-[#F9DE4B] transition-all duration-300 ease-out rounded-full"
                         style={{ width: `${progress}%` }}

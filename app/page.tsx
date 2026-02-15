@@ -414,7 +414,7 @@ export default function Home() {
   )
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-[#0F1729] text-white relative overflow-hidden font-sans">
+    <main className="flex min-h-screen flex-col items-center bg-zinc-950 text-white relative overflow-hidden font-sans">
       <StarryBackground />
       {useMobile() ? (
         <div className="relative z-10 w-full h-[100dvh]">

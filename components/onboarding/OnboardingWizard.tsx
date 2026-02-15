@@ -22,7 +22,7 @@ const steps = [
     },
     {
         title: "Swipe and Discover",
-        description: "Borderless reach at your fingertips. Swipe right to support, left to Skip.",
+        description: "Borderless reach at your fingertips.\nSwipe right to support, left to Skip.",
     },
     {
         title: "Global Leaderboard",
@@ -166,7 +166,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                     <h2 className={`text-xl xs:text-2xl font-bold text-white mb-2 ${currentStep === 0 ? pixelFont.className + " tracking-widest leading-relaxed" : ""}`}>
                         {steps[currentStep].title}
                     </h2>
-                    <p className={`text-zinc-400 leading-relaxed mx-auto min-h-[3rem] flex items-center justify-center text-xs xs:text-sm tracking-tight ${currentStep === 0
+                    <p className={`text-zinc-400 leading-relaxed mx-auto min-h-[3rem] flex items-center justify-center text-xs xs:text-sm tracking-tight whitespace-pre-wrap ${currentStep === 0
                         ? "whitespace-nowrap max-w-none"
                         : "max-w-[320px]"
                         }`}>

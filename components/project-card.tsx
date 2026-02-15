@@ -174,7 +174,7 @@ export function ProjectCard({
           </div>
 
           {/* Description */}
-          <div className="relative mb-0.5">
+          <div className="relative">
             <p className="text-sm text-gray-300 font-normal leading-snug line-clamp-2">
               {project.description}
             </p>
@@ -182,7 +182,7 @@ export function ProjectCard({
         </div>
 
         {/* Meta Row: Socials + Boost Button */}
-        <div className="flex items-center justify-between my-1 shrink-0">
+        <div className="flex items-center justify-between my-2 shrink-0">
           {/* Left: Social Icons */}
           <div className="flex items-center gap-3">
             {socialLinks.map(({ key, icon: Icon, url }) => (
@@ -203,7 +203,7 @@ export function ProjectCard({
             onClick={(e) => handleAction(e, onBoost)}
             className="flex items-center gap-1.5 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white text-[11px] font-bold transition-all shadow-lg hover:shadow-indigo-500/50 animate-pulse border border-indigo-400/30"
           >
-            <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-xs">🚀</span>
+            <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-xs">✨</span>
             Boost
           </button>
         </div>

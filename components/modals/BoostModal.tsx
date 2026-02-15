@@ -12,7 +12,7 @@ interface BoostModalProps {
 
 const presets = [
     { amount: 1, duration: "1 Day" },
-    { amount: 5, duration: "1 Week", badge: "Best Value" },
+    { amount: 5, duration: "2 Weeks", badge: "Best Value" },
     { amount: 15, duration: "1 Month" }
 ]
 
@@ -90,7 +90,7 @@ export function BoostModal({ isOpen, onClose, project }: BoostModalProps) {
                                             </span>
                                         )}
                                         <span className="text-2xl font-bold text-white mb-1">${preset.amount}</span>
-                                        <span className="text-xs text-zinc-400 font-medium">{preset.duration}</span>
+                                        <span className="text-xs text-[#FFD600] font-medium">{preset.duration}</span>
                                     </button>
                                 ))}
                             </div>

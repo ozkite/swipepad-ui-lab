@@ -15,7 +15,7 @@ export function SlideToApprove({ onComplete }: SlideToApproveProps) {
     const [completed, setCompleted] = useState(false)
 
     // Dimensions
-    const trackWidth = 280
+    const trackWidth = 240
     const handleSize = 52 // Height matches the padding logic
     const padding = 4
     const trackHeight = handleSize + padding * 2 // 60px
