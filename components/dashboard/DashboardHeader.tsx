@@ -1,7 +1,10 @@
 "use client"
 
-import { Bell, ShoppingCart, Award } from "lucide-react"
+import { useState, useRef } from "react"
+
+import { Bell, ShoppingCart, Award, Search, Flame, X } from "lucide-react"
 import { Press_Start_2P } from "next/font/google"
+import { motion, AnimatePresence } from "framer-motion"
 
 const pixelFont = Press_Start_2P({ weight: "400", subsets: ["latin"] })
 
@@ -11,11 +14,16 @@ interface DashboardHeaderProps {
     currentSwipes: number
     targetSwipes: number
     selectedCategory: string
-    onSelectCategory: (category: string) => void
-    onEditAmount: () => void
+    onSelectCategory?: (category: string) => void
+    onEditAmount?: () => void
     onOpenNotifications?: () => void
     onOpenCart?: () => void
     onOpenLeaderboard?: () => void
+    isTrending: boolean
+    onToggleTrending: () => void
+    level: number
+    currentXP: number
+    nextLevelXP: number
 }
 
 const categories = ["See All", "Builders", "Eco Projects", "DApps"]
@@ -30,23 +38,28 @@ export function DashboardHeader({
     onEditAmount,
     onOpenNotifications,
     onOpenCart,
-    onOpenLeaderboard
+    onOpenLeaderboard,
+    isTrending,
+    onToggleTrending,
+    level,
+    currentXP,
+    nextLevelXP
 }: DashboardHeaderProps) {
-    const progress = Math.min((currentSwipes / targetSwipes) * 100, 100)
-    const remaining = Math.max(0, targetSwipes - currentSwipes)
+    const xpProgress = Math.min((currentXP / nextLevelXP) * 100, 100)
+    const xpRemaining = Math.max(0, nextLevelXP - currentXP)
 
     return (
-        <div className="flex flex-col w-full bg-zinc-950 pb-0.5 pt-1">
+        <div className="flex flex-col w-full bg-zinc-950 pb-0.5 pt-1 relative z-50">
 
             {/* Zone 1: Header Row */}
-            <div className="flex items-center justify-between px-4 mb-2">
+            <div className="flex items-center justify-between px-4 mb-2 h-10">
                 {/* Left: Logo */}
                 <h1 className={`${pixelFont.className} text-white text-[10px] tracking-widest`}>
                     SwipePad
                 </h1>
 
                 {/* Center: Live Donation Pill */}
-                <div className="hidden md:flex items-center pl-3 pr-4 py-1 bg-gray-800 rounded-full border border-gray-700/50">
+                <div className="hidden md:flex items-center pl-3 pr-4 py-1 bg-gray-800 rounded-full border border-gray-700/50 whitespace-nowrap">
                     <span className="relative flex h-2 w-2 mr-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -56,7 +69,7 @@ export function DashboardHeader({
                     </span>
                 </div>
                 {/* Mobile visible version of pill */}
-                <div className="md:hidden flex items-center pl-2 pr-3 py-0.5 bg-gray-800 rounded-full border border-gray-700/50 mx-2">
+                <div className="md:hidden flex items-center pl-2 pr-3 py-0.5 bg-gray-800 rounded-full border border-gray-700/50 mx-2 whitespace-nowrap">
                     <span className="relative flex h-1.5 w-1.5 mr-1.5">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
@@ -69,12 +82,15 @@ export function DashboardHeader({
 
                 {/* Right: Icon Group */}
                 <div className="flex items-center gap-2">
-                    {/* Notification Bell */}
+                    {/* Trending / Notification Toggle */}
                     <button
-                        onClick={onOpenNotifications}
-                        className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors border border-gray-700/30"
+                        onClick={onToggleTrending}
+                        className={`w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-colors border border-gray-700/30 ${isTrending
+                            ? "bg-orange-500/20 text-orange-400 border-orange-500/50"
+                            : "bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"
+                            }`}
                     >
-                        <Bell className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                        <Flame className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isTrending ? "fill-current" : ""}`} />
                     </button>
 
                     {/* Cart History */}
@@ -104,7 +120,7 @@ export function DashboardHeader({
                         return (
                             <button
                                 key={category}
-                                onClick={() => onSelectCategory(category)}
+                                onClick={() => onSelectCategory?.(category)}
                                 className={`whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] font-bold transition-all border shrink-0 ${isSelected
                                     ? "bg-[#F9DE4B] text-black border-[#F9DE4B]"
                                     : "bg-zinc-800/50 text-zinc-400 border-zinc-700 hover:bg-zinc-700"
@@ -117,33 +133,30 @@ export function DashboardHeader({
                 </div>
             </div>
 
-            {/* Zone 3: Level Tracker - Compressed Height */}
-            <div className="px-4 h-auto flex flex-col justify-end gap-0.5 mb-0 pb-1 mt-3">
-                {/* Row A: Level Info + Edit Amount */}
-                <div className="flex items-end justify-between">
-                    <div className="flex items-center gap-2 mb-0.5">
-                        <span className="bg-[#F9DE4B] text-black text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">
-                            LVL 1
-                        </span>
-                        <span className="text-gray-400 text-[10px] font-medium leading-none mb-px">
-                            <span className="text-gray-200 font-bold">{remaining}</span> swipes to next level
-                        </span>
+            {/* Zone 3: Level Tracker */}
+            <div className="flex items-center justify-between px-4 mt-1">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-gray-400 font-medium">YOUR LEVEL</span>
+                    <div className="flex items-baseline gap-1">
+                        <motion.span
+                            key={level}
+                            initial={{ scale: 1.5, color: "#fff" }}
+                            animate={{ scale: 1, color: "#fff" }}
+                            transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                            className={`text-xl font-bold text-white ${pixelFont.className}`}
+                        >
+                            LVL {level}
+                        </motion.span>
                     </div>
-
-                    <button
-                        onClick={onEditAmount}
-                        className="text-indigo-400 text-[9px] font-bold hover:text-indigo-300 transition-colors uppercase tracking-wide leading-none mb-px"
-                    >
-                        Edit Amount
-                    </button>
                 </div>
-
-                {/* Row B: Progress Bar */}
-                <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden shrink-0 mt-0">
-                    <div
-                        className="h-full bg-[#F9DE4B] transition-all duration-300 ease-out rounded-full"
-                        style={{ width: `${progress}%` }}
-                    />
+                <div className="flex flex-col items-end w-32">
+                    <span className="text-[10px] text-gray-400 font-medium mb-1">{currentXP} / {nextLevelXP} XP</span>
+                    <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                        <div
+                            className="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 rounded-full transition-all duration-300 ease-out"
+                            style={{ width: `${xpProgress}%` }}
+                        />
+                    </div>
                 </div>
             </div>
 

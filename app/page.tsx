@@ -1,9 +1,12 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { SwipeDeck } from "@/components/swipe/SwipeDeck"
+import { Press_Start_2P } from "next/font/google"
 import { TopBar } from "@/components/layout/TopBar"
+
+const pixelFont = Press_Start_2P({ weight: "400", subsets: ["latin"] })
 import { BottomNav } from "@/components/layout/BottomNav"
 import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard"
 import { SuccessScreen } from "@/components/success-screen"
@@ -16,7 +19,9 @@ import { StarryBackground } from "@/components/starry-background"
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader"
 import { MobileMockup } from "@/components/mobile-mockup"
 import { useMobile } from "@/hooks/use-mobile"
+import { Search } from "lucide-react"
 import { ProjectRegistrationForm } from "@/components/project-registration-form"
+import { SocialHub } from "@/components/profile/SocialHub"
 import { EditProfile } from "@/components/edit-profile"
 import { SettingsModal } from "@/components/modals/SettingsModal"
 import { BoostModal } from "@/components/modals/BoostModal"
@@ -44,7 +49,7 @@ const normalizeBuilders = (data: any[]): Project[] => data.map((item, i) => ({
   userHasLiked: false,
   userHasCommented: false,
   reportCount: 0,
-  boostAmount: 0,
+  boostAmount: Math.random() > 0.8 ? 100 : 0,
   verified: false,
 }))
 
@@ -70,7 +75,7 @@ const normalizeEco = (data: any[]): Project[] => data.map((item, i) => ({
   userHasLiked: false,
   userHasCommented: false,
   reportCount: 0,
-  boostAmount: 0,
+  boostAmount: Math.random() > 0.8 ? 100 : 0,
   verified: false,
 }))
 
@@ -96,7 +101,7 @@ const normalizeDapps = (data: any[]): Project[] => data.map((item, i) => ({
   userHasLiked: false,
   userHasCommented: false,
   reportCount: 0,
-  boostAmount: 0,
+  boostAmount: Math.random() > 0.8 ? 100 : 0,
   verified: false,
 }))
 
@@ -106,6 +111,10 @@ export default function Home() {
   const [showSettings, setShowSettings] = useState(false)
   const [showBoostModal, setShowBoostModal] = useState(false)
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0)
+
+  // Search & Trending State
+  const [searchQuery, setSearchQuery] = useState("")
+  const [isTrending, setIsTrending] = useState(false)
 
   // Cart & checkout state
   const [cart, setCart] = useState<Array<{ project: any; amount: number; currency: StableCoin; message?: string }>>([])
@@ -147,6 +156,36 @@ export default function Home() {
     nounsHeld: 2,
     lilNounsHeld: 5,
   })
+
+  // Leveling State
+  const [level, setLevel] = useState(1)
+  const [currentXP, setCurrentXP] = useState(0)
+  const [nextLevelXP, setNextLevelXP] = useState(500)
+  const [showLevelUp, setShowLevelUp] = useState(false)
+  const [showSocialHub, setShowSocialHub] = useState(false)
+
+  const SWIPE_XP = 5
+  const BOOST_XP = 50
+
+  const handleAddXP = (amount: number) => {
+    if (level >= 10) return
+
+    let newXP = currentXP + amount
+    let nextXP = nextLevelXP
+    let newLevel = level
+
+    if (newXP >= nextXP) {
+      newXP = newXP - nextXP
+      newLevel = level + 1
+      nextXP = Math.floor(nextXP * 1.5)
+      setShowLevelUp(true)
+      setTimeout(() => setShowLevelUp(false), 3000)
+    }
+
+    setCurrentXP(newXP)
+    setLevel(newLevel)
+    setNextLevelXP(nextXP)
+  }
 
   const [showRegistrationForm, setShowRegistrationForm] = useState(false)
   const [showEditProfile, setShowEditProfile] = useState(false)
@@ -206,7 +245,24 @@ export default function Home() {
 
     // Simulate loading user profile
     // In a real app, this would be an API call
+    // In a real app, this would be an API call
   }, [])
+
+  // Derived Projects for Display (Search/Trending)
+  const displayProjects = useMemo(() => {
+    if (!searchQuery && !isTrending) return filteredProjects
+
+    return filteredProjects.filter(p => {
+      const matchesSearch = searchQuery
+        ? (p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.description.toLowerCase().includes(searchQuery.toLowerCase()))
+        : true
+      const matchesTrending = isTrending
+        ? (p.boostAmount && p.boostAmount > 0)
+        : true
+      return matchesSearch && matchesTrending
+    })
+  }, [filteredProjects, searchQuery, isTrending])
 
   // -- Handlers --
 
@@ -234,6 +290,7 @@ export default function Home() {
     if (!project) return;
 
     // Optimistic UI updates
+    handleAddXP(SWIPE_XP)
     setUserProfile((prev) => ({
       ...prev,
       totalSwipes: prev.totalSwipes + 1,
@@ -352,7 +409,12 @@ export default function Home() {
                   onEditAmount={() => setShowSettings(true)}
                   onOpenNotifications={() => console.log("Notifications")}
                   onOpenCart={() => console.log("Cart")}
-                  onOpenLeaderboard={() => console.log("Leaderboard")}
+                  onOpenLeaderboard={() => setShowSocialHub(true)}
+                  isTrending={isTrending}
+                  onToggleTrending={() => setIsTrending(prev => !prev)}
+                  level={level}
+                  currentXP={currentXP}
+                  nextLevelXP={nextLevelXP}
                 />
 
                 <div className="flex-1 relative flex flex-col px-4 pt-0">
@@ -360,12 +422,17 @@ export default function Home() {
                   {/* Zone 4: The Swipe Deck (Fixed Spacing, Top Anchored) */}
                   <div className="flex-1 flex justify-center pt-0 pb-16">
                     <SwipeDeck
-                      projects={filteredProjects}
+                      projects={displayProjects}
                       activeIndex={currentProjectIndex}
                       onSwipeLeft={handleSwipeLeft}
                       onSwipeRight={handleSwipeRight}
                       onRewind={handleRewind}
                       onBoost={() => setShowBoostModal(true)}
+                      isListMode={!!searchQuery || isTrending}
+                      onClearSearch={() => {
+                        setSearchQuery("")
+                        setIsTrending(false)
+                      }}
                     />
                   </div>
                 </div>
@@ -380,8 +447,39 @@ export default function Home() {
             />
 
             {viewMode === "trending" && (
-              <div className="h-full overflow-y-auto px-6 py-6">
-                <TrendingSection onDonate={() => { }} />
+              <div className="h-full relative flex flex-col">
+                {/* Search Header */}
+                <div className="p-4 pb-2 bg-transparent z-10 sticky top-0 backdrop-blur-md">
+                  <h2 className={`text-xl text-white mb-4 flex items-center gap-2 ${pixelFont.className}`}>
+                    <Search className="w-5 h-5 text-[#F9DE4B]" />
+                    DISCOVER
+                  </h2>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
+                    <input
+                      type="text"
+                      placeholder="Search projects, tags..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-gray-900/80 border border-gray-700 text-white pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:border-[#F9DE4B] placeholder-gray-500 text-sm font-medium"
+                      autoFocus
+                    />
+                  </div>
+                </div>
+
+                {/* Results List */}
+                <div className="flex-1 overflow-hidden px-4 pb-20">
+                  <SwipeDeck
+                    projects={displayProjects}
+                    activeIndex={0} // List mode renders all, index irrelevant
+                    onSwipeLeft={() => { }}
+                    onSwipeRight={() => { }}
+                    onRewind={() => { }}
+                    onBoost={() => setShowBoostModal(true)}
+                    isListMode={true}
+                    onClearSearch={() => setSearchQuery("")}
+                  />
+                </div>
               </div>
             )}
 
@@ -420,6 +518,35 @@ export default function Home() {
         onClose={() => setShowRegistrationForm(false)}
         onSubmit={handleRegistrationSubmit}
       />
+
+      <SocialHub
+        isOpen={showSocialHub}
+        onClose={() => setShowSocialHub(false)}
+        userStats={{
+          totalDonations: userProfile.totalDonated,
+          level: level,
+          totalXP: currentXP // Simplified for now, usually total cumulative XP
+        }}
+      />
+
+      {/* Level Up Toast */}
+      <AnimatePresence>
+        {showLevelUp && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5, y: 50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: 50 }}
+            className="fixed top-1/4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-orange-500 p-6 rounded-2xl shadow-2xl z-50 flex flex-col items-center text-center border-4 border-white/20"
+          >
+            <div className="text-4xl mb-2">🎉</div>
+            <h2 className="text-3xl font-black text-white italic drop-shadow-md">LEVEL UP!</h2>
+            <p className="text-white font-bold text-lg mt-1">You reached Level {level}</p>
+            <div className="mt-4 bg-white/20 px-4 py-2 rounded-full font-bold text-white text-sm">
+              + Rewards Unlocked
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 
