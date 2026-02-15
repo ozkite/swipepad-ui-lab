@@ -117,8 +117,8 @@ export function DashboardHeader({
                 </div>
             </div>
 
-            {/* Zone 3: Level Tracker - Fixed Height Container */}
-            <div className="px-4 h-[36px] flex flex-col justify-end gap-0.5 mb-0">
+            {/* Zone 3: Level Tracker - Compressed Height */}
+            <div className="px-4 h-auto flex flex-col justify-end gap-1 mb-0 pb-1">
                 {/* Row A: Level Info + Edit Amount */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -132,14 +132,14 @@ export function DashboardHeader({
 
                     <button
                         onClick={onEditAmount}
-                        className="text-indigo-400 text-[10px] font-bold hover:text-indigo-300 transition-colors uppercase tracking-wide"
+                        className="text-indigo-400 text-[9px] font-bold hover:text-indigo-300 transition-colors uppercase tracking-wide"
                     >
                         Edit Amount
                     </button>
                 </div>
 
                 {/* Row B: Progress Bar */}
-                <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden shrink-0">
+                <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden shrink-0 mt-0.5">
                     <div
                         className="h-full bg-[#F9DE4B] transition-all duration-300 ease-out rounded-full"
                         style={{ width: `${progress}%` }}

@@ -345,10 +345,10 @@ export default function Home() {
                   onOpenLeaderboard={() => console.log("Leaderboard")}
                 />
 
-                <div className="flex-1 relative flex flex-col px-4 pt-1">
+                <div className="flex-1 relative flex flex-col px-4 pt-0">
 
                   {/* Zone 4: The Swipe Deck (Fixed Spacing, Top Anchored) */}
-                  <div className="flex-1 flex justify-center pt-4">
+                  <div className="flex-1 flex justify-center pt-0 pb-16">
                     <SwipeDeck
                       projects={filteredProjects}
                       activeIndex={currentProjectIndex}
@@ -417,7 +417,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center bg-[#0F1729] text-white relative overflow-hidden font-sans">
       <StarryBackground />
       {useMobile() ? (
-        <div className="relative z-10 w-full h-screen">
+        <div className="relative z-10 w-full h-[100dvh]">
           <AppContent />
         </div>
       ) : (

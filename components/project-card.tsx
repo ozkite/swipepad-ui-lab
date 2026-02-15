@@ -163,28 +163,28 @@ export function ProjectCard({
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0F1729] to-transparent z-10" />
       </div>
 
-      {/* 2. Info Chin (Bottom ~40%) - Squashed */}
-      <div className="absolute bottom-0 left-0 right-0 h-auto min-h-[35%] max-h-[40%] bg-slate-900/95 backdrop-blur-sm rounded-t-[28px] z-20 flex flex-col px-4 pt-3 pb-2 border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] justify-between">
+      {/* 2. Info Chin (Bottom) - Flexible Height */}
+      <div className="absolute bottom-0 left-0 right-0 h-auto max-h-[60%] bg-slate-900/95 backdrop-blur-sm rounded-t-3xl z-20 flex flex-col px-4 pt-2 pb-1 border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] justify-end">
 
-        <div className="flex-1 flex flex-col gap-0.5 min-h-0">
+        <div className="flex-1 flex flex-col gap-0.5 min-h-0 overflow-hidden">
           {/* Header: Name + Verification */}
-          <div className="flex items-center gap-1.5 mb-0 shrink-0">
-            <h2 className="text-base font-bold text-white tracking-wide truncate leading-tight">{project.name}</h2>
-            {project.verified && <Zap className="w-3.5 h-3.5 text-[#FFD600] fill-current shrink-0" />}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <h2 className="text-lg font-bold text-white tracking-wide truncate leading-tight">{project.name}</h2>
+            {project.verified && <Zap className="w-4 h-4 text-[#FFD600] fill-current shrink-0" />}
           </div>
 
-          {/* Description (Truncated) */}
-          <div className="relative overflow-hidden mb-1">
-            <p className="text-[11px] text-gray-400 font-normal leading-snug line-clamp-2">
+          {/* Description */}
+          <div className="relative mb-0.5">
+            <p className="text-sm text-gray-300 font-normal leading-snug line-clamp-2">
               {project.description}
             </p>
           </div>
         </div>
 
         {/* Meta Row: Socials + Boost Button */}
-        <div className="flex items-center justify-between mb-1 mt-1 shrink-0">
+        <div className="flex items-center justify-between my-1 shrink-0">
           {/* Left: Social Icons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {socialLinks.map(({ key, icon: Icon, url }) => (
               url && url !== "NA" && (
                 <button
@@ -201,40 +201,39 @@ export function ProjectCard({
           {/* Right: New Small Boost Button */}
           <button
             onClick={(e) => handleAction(e, onBoost)}
-            className="flex items-center gap-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white text-[10px] font-bold transition-all shadow-lg hover:shadow-indigo-500/50 animate-pulse border border-indigo-400/30"
+            className="flex items-center gap-1.5 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white text-[11px] font-bold transition-all shadow-lg hover:shadow-indigo-500/50 animate-pulse border border-indigo-400/30"
           >
             <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-xs">🚀</span>
             Boost
           </button>
         </div>
 
-        {/* Action Area (New 3-Button Layout) */}
         {/* Action Area (Pill-shaped 3-Button Layout) */}
-        <div className="flex items-center justify-between gap-4 pb-4 mt-2 px-2">
+        <div className="flex items-center justify-between gap-2 pb-2 mt-0.5 px-1">
           {/* Skip (Left) */}
           <button
             onClick={(e) => handleAction(e, onSwipeLeft)}
-            className="flex-1 h-14 bg-zinc-800 hover:bg-zinc-700 text-white rounded-[32px] flex items-center justify-center gap-2 transition-all active:scale-95 border border-zinc-700/50 shadow-lg"
+            className="flex-1 h-12 bg-zinc-800 hover:bg-zinc-700 text-white rounded-[24px] flex items-center justify-center gap-2 transition-all active:scale-95 border border-zinc-700/50 shadow-lg"
           >
-            <X className="w-6 h-6" />
-            <span className="text-lg font-medium">Skip</span>
+            <X className="w-5 h-5" />
+            <span className="text-base font-medium">Skip</span>
           </button>
 
           {/* Revert (Center) */}
           <button
             onClick={(e) => handleAction(e, onRewind)}
-            className="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 text-blue-400 rounded-full flex items-center justify-center transition-all active:scale-95 shrink-0 border border-zinc-700/50 shadow-md"
+            className="w-11 h-11 bg-zinc-800 hover:bg-zinc-700 text-blue-400 rounded-full flex items-center justify-center transition-all active:scale-95 shrink-0 border border-zinc-700/50 shadow-md"
           >
-            <RotateCcw className="w-5 h-5" />
+            <RotateCcw className="w-4 h-4" />
           </button>
 
           {/* Like (Right) */}
           <button
             onClick={(e) => handleAction(e, onSwipeRight)}
-            className="flex-1 h-14 bg-[#F9DE4B] hover:bg-[#F7CE00] text-black rounded-[32px] flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-yellow-900/10"
+            className="flex-1 h-12 bg-[#F9DE4B] hover:bg-[#F7CE00] text-black rounded-[24px] flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-yellow-900/10"
           >
-            <ThumbsUp className="w-6 h-6 stroke-[2.5px]" />
-            <span className="text-lg font-medium">Like</span>
+            <ThumbsUp className="w-5 h-5 stroke-[2.5px]" />
+            <span className="text-base font-medium">Like</span>
           </button>
         </div>
 

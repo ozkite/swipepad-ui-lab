@@ -73,7 +73,7 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
     if (!mappedProject) return <div className="text-center text-gray-500 py-10">No more projects!</div>
 
     return (
-        <div className="relative w-full max-w-sm mx-auto h-[600px] flex items-center justify-center">
+        <div className="relative w-full max-w-sm mx-auto h-full flex items-center justify-center">
             {/* Background Card (Next Project) */}
             {nextProject && (
                 <div className="absolute top-0 w-full h-full p-4 scale-95 opacity-50 translate-y-4 -z-10 bg-gray-900 rounded-3xl">
