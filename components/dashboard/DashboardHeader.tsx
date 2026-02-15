@@ -139,10 +139,10 @@ export function DashboardHeader({
                     <span className="text-[10px] text-gray-400 font-medium">YOUR LEVEL</span>
                     <div className="flex items-baseline gap-1">
                         <motion.span
-                            key={level}
-                            initial={{ scale: 1.2, color: "#fff" }}
+                            key={currentXP}
+                            initial={{ scale: 1.05, color: "#fff" }}
                             animate={{ scale: 1, color: "#fff" }}
-                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                            transition={{ type: "spring", stiffness: 500, damping: 15 }}
                             className={`text-xl font-bold text-white ${pixelFont.className}`}
                         >
                             LVL {level}
