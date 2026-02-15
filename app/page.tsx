@@ -499,7 +499,17 @@ export default function Home() {
       </div>
 
       {/* Green Zone: Bottom Nav */}
-      <BottomNav currentView={viewMode} onChangeView={(v) => setViewMode(v as any)} />
+      <BottomNav
+        currentView={viewMode}
+        onChangeView={(v) => {
+          setViewMode(v as any)
+          if (v === "swipe") {
+            setSelectedCategory("See All")
+            setIsTrending(false)
+            setSearchQuery("")
+          }
+        }}
+      />
 
       {/* Modals */}
       {showSuccess && (
