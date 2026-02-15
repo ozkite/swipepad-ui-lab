@@ -91,17 +91,23 @@ export function SlideToApprove({ onComplete }: SlideToApproveProps) {
                 />
             </div>
 
-            {/* The Yellow Fill Bar */}
-            {/* It sits behind the handle visually (but same z-index logic or just before in DOM) */}
-            {/* Actually, if we want it to look like one piece, we just need a yellow rect that grows. */}
-            {/* The handle is on top. */}
+            {/* The Yellow Fill Bar with Revealed Text */}
             <motion.div
-                className="absolute top-1 left-1 bg-[#F9DE4B] rounded-full z-10"
+                className="absolute top-1 left-1 bg-[#F9DE4B] rounded-full z-10 overflow-hidden"
                 style={{
                     height: handleSize,
                     width: fillWidth,
                 }}
-            />
+            >
+                <div
+                    className="absolute left-0 top-0 h-full flex items-center justify-center pointer-events-none"
+                    style={{ width: trackWidth - padding * 2 }}
+                >
+                    <span className="text-black font-extrabold text-sm whitespace-nowrap tracking-wide">
+                        20 Free Swipes!!
+                    </span>
+                </div>
+            </motion.div>
 
             {/* Draggable Handle */}
             <motion.div

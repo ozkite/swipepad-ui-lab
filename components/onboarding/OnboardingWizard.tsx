@@ -26,7 +26,7 @@ const steps = [
     },
     {
         title: "Global Leaderboard",
-        description: "Climb the rankings to win prizes, boost your favorite projects.",
+        description: "Climb the rankings to win amazing prizes.\nBoost your favourite projects.",
     },
 ]
 
