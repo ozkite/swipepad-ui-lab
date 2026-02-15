@@ -82,6 +82,16 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
                 </div>
             )}
 
+            {/* Image Preloader */}
+            <div className="hidden" aria-hidden="true">
+                {projects[activeIndex + 1]?.imageUrl && (
+                    <img src={projects[activeIndex + 1].imageUrl} alt="" />
+                )}
+                {projects[activeIndex + 2]?.imageUrl && (
+                    <img src={projects[activeIndex + 2].imageUrl} alt="" />
+                )}
+            </div>
+
             <AnimatePresence initial={false} custom={exitDirection}>
                 <motion.div
                     key={mappedProject.id || activeIndex} // Use ID if available, else index

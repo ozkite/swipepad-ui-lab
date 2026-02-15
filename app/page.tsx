@@ -300,6 +300,16 @@ export default function Home() {
     setSwipeCount(0)
   }
 
+  const handleCategorySelect = (cat: string) => {
+    if (cat === selectedCategory) {
+      // If clicking the same category, force a re-shuffle
+      setFilteredProjects(prev => shuffleArray([...prev]))
+      setCurrentProjectIndex(0)
+    } else {
+      setSelectedCategory(cat)
+    }
+  }
+
   const AppContent = () => (
     <div className="w-full h-full flex flex-col bg-transparent relative">
       {/* Onboarding Wizard Overlay */}
@@ -338,7 +348,7 @@ export default function Home() {
                   currentSwipes={swipeCount}
                   targetSwipes={confirmSwipes}
                   selectedCategory={selectedCategory}
-                  onSelectCategory={(cat) => setSelectedCategory(cat)}
+                  onSelectCategory={handleCategorySelect}
                   onEditAmount={() => setShowSettings(true)}
                   onOpenNotifications={() => console.log("Notifications")}
                   onOpenCart={() => console.log("Cart")}
