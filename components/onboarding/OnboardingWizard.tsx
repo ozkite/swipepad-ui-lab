@@ -9,6 +9,8 @@ import { Press_Start_2P } from "next/font/google"
 // Brand Font for Slide 1 Logo
 const pixelFont = Press_Start_2P({ weight: "400", subsets: ["latin"] })
 
+import { SlideToApprove } from "./SlideToApprove"
+
 interface OnboardingWizardProps {
     onComplete: () => void
 }
@@ -88,16 +90,15 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
     return (
         <div
-            className="fixed inset-0 z-[100] min-h-screen flex flex-col items-center justify-start bg-zinc-950 pt-12 pb-8 overflow-hidden select-none"
+            className="fixed inset-0 z-[100] h-[100dvh] flex flex-col items-center justify-between bg-zinc-950 overflow-hidden select-none"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
         >
-            {/* 1. FIXED HERO SECTION (Does not unmount/remount) */}
-            <div className="w-full flex flex-col items-center justify-start relative pointer-events-none mb-2 pt-4">
-                {/* Fixed Fan Stack - Container Height Increased to prevent overlap */}
-                {/* Fixed Fan Stack - Animated Shuffle */}
-                <div className="relative w-full h-[400px] md:h-[500px] flex justify-center items-center">
+            {/* 1. FLEXIBLE HERO SECTION */}
+            {/* Using flex-1 to allow it to shrink/grow but capped max-height on mobile to ensure space for bottom */}
+            <div className="w-full flex-1 flex flex-col items-center justify-center relative pointer-events-none min-h-0 pt-safe-top">
+                <div className="relative w-full h-full max-h-[55vh] flex justify-center items-center">
                     {fanCards.map((card, i) => {
                         const offset = (i - cardIndex + 3) % 3
                         const isFront = offset === 0
@@ -115,7 +116,6 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                             x = "-50%"
                             rotate = 0
                             top = 32 // top-8
-                            // Juicy "Enter" Animation: Scale up then settle
                             scale = [0.9, 1.05, 1]
                         } else if (isMiddle) {
                             zIndex = 20
@@ -125,7 +125,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                         }
 
                         // Wobble rotation for front card only
-                        const animateRotate = isFront ? [offset === 1 ? -12 : 12, -2, 2, 0] : rotate
+                        const animateRotate = isFront ? [i % 2 === 0 ? -12 : 12, -2, 2, 0] : rotate
 
                         return (
                             <motion.div
@@ -135,7 +135,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                                     zIndex,
                                     x,
                                     top,
-                                    rotate: isFront ? 0 : rotate, // Simplified rotation to avoid excessive wobble conflict
+                                    rotate: isFront ? 0 : rotate,
                                     scale,
                                 }}
                                 transition={{
@@ -144,13 +144,13 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                                     scale: { duration: 0.4, ease: "easeOut" }
                                 }}
                             >
-                                {/* Inner wrapper for Floating Animation to allow independent composition */}
+                                {/* Adjusted Image Size for better Mobile Fit */}
                                 <div className="animate-float" style={{ animationDelay: `${i * 1.5}s` }}>
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                         src={card.src}
                                         alt={card.alt}
-                                        className="w-56 h-[340px] md:w-72 md:h-[420px] object-cover rounded-2xl border-4 border-zinc-800 shadow-xl"
+                                        className="w-48 h-[290px] xs:w-56 xs:h-[340px] md:w-72 md:h-[420px] object-cover rounded-2xl border-4 border-zinc-800 shadow-xl"
                                     />
                                 </div>
                             </motion.div>
@@ -159,15 +159,16 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                 </div>
             </div>
 
-            {/* 2. DYNAMIC TEXT SECTION (Changes based on step) */}
-            <div className="flex-none w-full px-8 pb-4 text-center transition-opacity duration-300 z-50">
-                <div key={currentStep} className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-                    <h2 className={`text-2xl font-bold text-white mb-2 ${currentStep === 0 ? pixelFont.className + " tracking-widest leading-relaxed" : ""}`}>
+            {/* 2. FIXED BOTTOM SECTION (Text + Dots + Button) */}
+            {/* This ensures the button is always at the same height from the bottom */}
+            <div className="flex-none w-full px-8 pb-8 pt-4 text-center z-50 flex flex-col items-center justify-end bg-gradient-to-t from-zinc-950 via-zinc-950/90 to-transparent">
+                <div key={currentStep} className="animate-in fade-in slide-in-from-bottom-4 duration-300 w-full">
+                    <h2 className={`text-xl xs:text-2xl font-bold text-white mb-2 ${currentStep === 0 ? pixelFont.className + " tracking-widest leading-relaxed" : ""}`}>
                         {steps[currentStep].title}
                     </h2>
-                    <p className={`text-zinc-400 leading-relaxed mx-auto h-16 flex items-center justify-center ${currentStep === 0
-                            ? "text-sm whitespace-nowrap tracking-tight max-w-none"
-                            : "text-base max-w-[300px]"
+                    <p className={`text-zinc-400 leading-relaxed mx-auto min-h-[3rem] flex items-center justify-center text-xs xs:text-sm tracking-tight ${currentStep === 0
+                        ? "whitespace-nowrap max-w-none"
+                        : "max-w-[320px]"
                         }`}>
                         {steps[currentStep].description}
                     </p>
@@ -180,8 +181,8 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                     ))}
                 </div>
 
-                {/* ACTION AREA */}
-                <div className="flex justify-center h-16">
+                {/* ACTION AREA - Fixed Height Container */}
+                <div className="flex justify-center items-center h-16 w-full">
                     {currentStep < steps.length - 1 ? (
                         <button
                             onClick={handleNext}
@@ -191,85 +192,11 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                             <ArrowRight className="w-4 h-4" />
                         </button>
                     ) : (
-                        <SlideToEnter onConfirm={onComplete} />
+                        <SlideToApprove onComplete={onComplete} />
                     )}
                 </div>
             </div>
 
-        </div>
-    )
-}
-
-// -- Slide To Enter Component --
-
-interface SlideToEnterProps {
-    onConfirm: () => void
-}
-
-function SlideToEnter({ onConfirm }: SlideToEnterProps) {
-    const controls = useAnimation()
-    const x = useMotionValue(0)
-    const width = 280 // Width of the track
-    const handleSize = 56 // Width of the handle (h-14 w-14)
-    const maxDrag = width - handleSize - 8 // padding adjustments
-
-    const backgroundOpacity = useTransform(x, [0, maxDrag], [0.5, 1])
-    const textOpacity = useTransform(x, [0, maxDrag / 2], [1, 0])
-
-    const handleDragEnd = async () => {
-        if (x.get() > maxDrag - 20) {
-            // Completed!
-            await controls.start({ x: maxDrag })
-
-            // Trigger Confetti
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#F9DE4B', '#ffffff'],
-                zIndex: 60
-            })
-
-            // Short delay before closing
-            setTimeout(() => {
-                onConfirm()
-            }, 800)
-        } else {
-            // Snap back
-            controls.start({ x: 0 })
-        }
-    }
-
-    return (
-        <div className="relative w-[280px] h-14 bg-zinc-900 border border-zinc-700 rounded-full overflow-hidden select-none shadow-lg">
-            {/* Track Fill Animation */}
-            <motion.div
-                className="absolute inset-y-0 left-0 bg-[#F9DE4B]/20"
-                style={{ width: x, opacity: backgroundOpacity }}
-            />
-
-            {/* Helper Text */}
-            <motion.div
-                className="absolute inset-0 flex items-center justify-center"
-                style={{ opacity: textOpacity }}
-            >
-                <span className="text-zinc-500 font-bold text-xs tracking-widest uppercase animate-pulse">
-                    Slide to Enter
-                </span>
-            </motion.div>
-
-            {/* Draggable Handle */}
-            <motion.div
-                drag="x"
-                dragConstraints={{ left: 0, right: maxDrag }}
-                dragElastic={0.1}
-                onDragEnd={handleDragEnd}
-                animate={controls}
-                style={{ x }}
-                className="absolute top-1 left-1 w-12 h-12 bg-[#F9DE4B] rounded-full shadow-[0_0_15px_rgba(249,222,75,0.4)] flex items-center justify-center cursor-grab active:cursor-grabbing z-20"
-            >
-                <ArrowRight className="w-5 h-5 text-black stroke-[3]" />
-            </motion.div>
         </div>
     )
 }
