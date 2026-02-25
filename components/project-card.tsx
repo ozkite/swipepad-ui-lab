@@ -1,8 +1,44 @@
 "use client"
 
-import type React from "react"
+import React, { useState, useEffect } from "react"
 import { Heart, MessageCircle, Flag, Zap, RotateCcw, ThumbsUp, X, Share2, MoreVertical, Rocket } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
+
+// -- Turbo Components --
+function ParticleBurst({ onComplete }: { onComplete: () => void }) {
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; scale: number; rotation: number; color: string }>>([])
+
+  useEffect(() => {
+    const colors = ["#E2FF3B", "#FF00E5", "#00FFF0"]
+    const newParticles = Array.from({ length: 15 }).map((_, i) => ({
+      id: i,
+      x: (Math.random() - 0.5) * 150, // spread X
+      y: (Math.random() - 0.5) * 150, // spread Y
+      scale: Math.random() * 0.8 + 0.4,
+      rotation: Math.random() * 360,
+      color: colors[Math.floor(Math.random() * colors.length)]
+    }))
+    setParticles(newParticles)
+
+    const timer = setTimeout(onComplete, 800)
+    return () => clearTimeout(timer)
+  }, [onComplete])
+
+  return (
+    <div className="absolute inset-0 pointer-events-none z-50 overflow-visible flex items-center justify-center">
+      {particles.map(p => (
+        <motion.div
+          key={p.id}
+          initial={{ x: 0, y: 0, scale: 0, opacity: 1, rotate: 0 }}
+          animate={{ x: p.x, y: p.y, scale: p.scale, opacity: 0, rotate: p.rotation }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="absolute w-3 h-3 rounded-full"
+          style={{ backgroundColor: p.color, boxShadow: `0 0 8px ${p.color}` }}
+        />
+      ))}
+    </div>
+  )
+}
 
 // -- Icon Components reused --
 // Note: XIcon here is the Twitter/X logo, not the close button.
@@ -140,20 +176,68 @@ export function ProjectCard({
     }
   }
 
+  const [isBoosting, setIsBoosting] = useState(false)
+  const [showParticles, setShowParticles] = useState(false)
+
+  const handleTurboBoost = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (isBoosting) return
+
+    // Trigger Haptics
+    if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
+      window.navigator.vibrate([40, 30, 40])
+    }
+
+    setIsBoosting(true)
+    setShowParticles(true)
+
+    // Call original boost handler
+    onBoost?.()
+
+    setTimeout(() => {
+      setIsBoosting(false)
+    }, 400)
+  }
+
   const badgeStyle = getCategoryStyles(project.categoryType)
 
   return (
-    <div className="relative w-full h-full rounded-[32px] overflow-hidden shadow-2xl bg-[#0F1729] flex flex-col disable-touch-callout select-none border border-gray-800">
+    <motion.div
+      animate={isBoosting ? {
+        scale: [1, 0.95, 1.05, 1],
+        x: [0, -2, 2, -2, 2, 0],
+        y: [0, 2, -2, 2, -2, 0]
+      } : { scale: 1, x: 0, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="relative w-full h-full rounded-[24px] overflow-hidden shadow-2xl bg-[#0D0D0D] flex flex-col disable-touch-callout select-none border border-[#1A1A1A]"
+    >
 
-      {/* 1. Full Bleed Image (Top ~60%) */}
-      {/* Adjusted height to make room for larger chin with boost button */}
-      <div className="absolute top-0 left-0 w-full h-[60%] z-0 bg-slate-900">
+      {/* 1. Container-Centric Image (Aspect 4/5) */}
+      <div className="w-full aspect-[4/5] shrink-0 relative z-0 bg-black rounded-t-[24px] overflow-hidden">
         <img
           src={project.image && project.image !== "NA" ? project.image : `/placeholder.svg?height=600&width=400&text=${project.name}`}
           alt={project.name}
-          className="w-full h-full object-contain absolute inset-0"
+          className="w-full h-full object-cover object-top absolute inset-0 rounded-t-[24px]"
           draggable={false}
         />
+
+        {/* Turbo Shockwave (Conditional) */}
+        <AnimatePresence>
+          {isBoosting && (
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0.6 }}
+              animate={{ scale: 2.0, opacity: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="absolute inset-0 z-20 mix-blend-screen pointer-events-none"
+              style={{
+                background: "radial-gradient(circle at center, rgba(226, 255, 59, 0.8) 0%, rgba(255, 0, 229, 0.4) 40%, rgba(0, 255, 240, 0) 70%)"
+              }}
+            />
+          )}
+        </AnimatePresence>
 
         {/* Category Badge */}
         <div className={`absolute top-4 left-4 z-10 ${badgeStyle.className} text-white font-bold text-[10px] uppercase tracking-wider px-3 py-1 shadow-sm rounded-full`}>
@@ -163,20 +247,25 @@ export function ProjectCard({
         </div>
 
         {/* Floating Boost Button over Image */}
-        <button
-          onClick={(e) => handleAction(e, onBoost)}
-          style={{ marginBottom: '16px' }}
-          className="absolute bottom-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/95 hover:bg-indigo-500 rounded-full text-white text-[11px] font-bold transition-all shadow-[0_4px_15px_rgba(79,70,229,0.5)] hover:shadow-[0_0_20px_rgba(79,70,229,0.8)] animate-pulse border border-indigo-400/30 backdrop-blur-sm"
-        >
-          <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-xs">✨</span>
-          Boost
-        </button>
+        <div className="absolute bottom-3 right-3 z-30">
+          <button
+            onClick={handleTurboBoost}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white text-[11px] font-bold transition-all backdrop-blur-md border border-indigo-400/30 ${isBoosting
+                ? "bg-indigo-400 scale-90 shadow-[0_0_30px_rgba(255,0,229,0.8)]"
+                : "bg-indigo-600/80 hover:bg-indigo-500 shadow-[0_4px_15px_rgba(79,70,229,0.5)] hover:shadow-[0_0_20px_rgba(79,70,229,0.8)] animate-pulse"
+              }`}
+          >
+            <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-xs">✨</span>
+            Boost
+          </button>
+          {showParticles && <ParticleBurst onComplete={() => setShowParticles(false)} />}
+        </div>
       </div>
 
       {/* 2. Info Chin (Bottom) - Flexible Height */}
-      <div className="absolute bottom-0 left-0 right-0 h-auto max-h-[60%] bg-slate-900/95 backdrop-blur-sm rounded-t-3xl z-20 flex flex-col px-4 pt-4 pb-1 border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] justify-end">
+      <div className="flex-1 flex flex-col px-4 pt-3 pb-2 justify-between z-20 bg-[#0D0D0D]">
 
-        <div className="flex-1 flex flex-col gap-0.5 min-h-0 overflow-hidden">
+        <div className="flex flex-col gap-1 min-h-0 overflow-hidden">
           {/* Header: Name + Verification */}
           <div className="flex items-center gap-1.5 shrink-0">
             <h2 className="text-lg font-bold text-white tracking-wide truncate leading-tight">{project.name}</h2>
@@ -184,22 +273,18 @@ export function ProjectCard({
           </div>
 
           {/* Description */}
-          <div className="relative">
-            <p className="text-sm text-gray-300 font-normal leading-snug line-clamp-2">
-              {project.description}
-            </p>
-          </div>
-        </div>
+          <p className="text-sm text-gray-400 font-normal leading-snug line-clamp-2">
+            {project.description}
+          </p>
 
-        {/* Meta Row: Socials */}
-        <div className="flex items-center my-2 shrink-0">
-          <div className="flex items-center gap-3">
+          {/* Meta Row: Socials */}
+          <div className="flex items-center gap-3 shrink-0 mt-0.5">
             {socialLinks.map(({ key, icon: Icon, url }) => (
               url && url !== "NA" && (
                 <button
                   key={key}
                   onClick={(e) => handleExternalLink(e, url)}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-500 hover:text-gray-300 transition-colors"
                 >
                   <Icon className="w-4 h-4" />
                 </button>
@@ -239,6 +324,6 @@ export function ProjectCard({
 
       </div>
 
-    </div >
+    </motion.div >
   )
 }
