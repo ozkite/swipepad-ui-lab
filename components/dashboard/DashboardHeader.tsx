@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 
-import { Bell, ShoppingCart, Award, Search, Flame, X } from "lucide-react"
+import { Bell, Award, Search, Flame, X } from "lucide-react"
 import { Press_Start_2P } from "next/font/google"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -17,7 +17,6 @@ interface DashboardHeaderProps {
     onSelectCategory?: (category: string) => void
     onEditAmount?: () => void
     onOpenNotifications?: () => void
-    onOpenCart?: () => void
     onOpenLeaderboard?: () => void
     isTrending: boolean
     onToggleTrending: () => void
@@ -37,7 +36,6 @@ export function DashboardHeader({
     onSelectCategory,
     onEditAmount,
     onOpenNotifications,
-    onOpenCart,
     onOpenLeaderboard,
     isTrending,
     onToggleTrending,
@@ -101,14 +99,6 @@ export function DashboardHeader({
                             }`}
                     >
                         <Flame className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isTrending ? "fill-current" : ""}`} />
-                    </button>
-
-                    {/* Cart History */}
-                    <button
-                        onClick={onOpenCart}
-                        className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors border border-gray-700/30"
-                    >
-                        <ShoppingCart className="w-3.5 h-3.5 md:w-4 md:h-4" />
                     </button>
 
                     {/* Leaderboard Ribbon */}

@@ -25,6 +25,7 @@ import { SocialHub } from "@/components/profile/SocialHub"
 import { EditProfile } from "@/components/edit-profile"
 import { SettingsModal } from "@/components/modals/SettingsModal"
 import { BoostModal } from "@/components/modals/BoostModal"
+import { SettingsHub } from "@/components/settings/SettingsHub"
 import { bCardsData, eCardsData, kCardsData } from "@/lib/real_data"
 import agentsData from "@/lib/a_cards.json"
 import { shuffleArray } from "@/lib/utils"
@@ -134,7 +135,7 @@ const normalizeAgents = (data: any[]): Project[] => data.map((item, i) => ({
 
 export default function Home() {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false)
-  const [viewMode, setViewMode] = useState<"swipe" | "trending" | "list" | "profile" | "wallet">("swipe")
+  const [viewMode, setViewMode] = useState<"swipe" | "trending" | "list" | "profile" | "wallet" | "action" | "settings">("swipe")
   const [showSettings, setShowSettings] = useState(false)
   const [showBoostModal, setShowBoostModal] = useState(false)
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0)
@@ -522,7 +523,18 @@ export default function Home() {
 
             {viewMode === "wallet" && (
               <div className="h-full flex items-center justify-center text-gray-500">
-                Wallet View Coming Soon
+                Wallet / Search View Coming Soon
+              </div>
+            )}
+
+            {viewMode === "settings" && (
+              <div className="h-full overflow-y-auto">
+                <SettingsHub
+                  onBack={() => setViewMode("swipe")}
+                  onOpenCart={() => console.log("Cart opened")}
+                  onOpenPresets={() => { }} // Ready for a preset modal implementation
+                  onOpenProfile={() => setShowEditProfile(true)}
+                />
               </div>
             )}
           </>
