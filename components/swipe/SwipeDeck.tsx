@@ -35,7 +35,7 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
             ? 'eco'
             : activeProject.category === "Social Impact" || activeProject.category === "Open Source"
                 ? 'builders'
-                : 'dapps'),
+                : 'apps'),
         socials: {
             github: activeProject.github,
             farcaster: activeProject.farcaster,

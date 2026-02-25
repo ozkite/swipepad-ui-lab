@@ -7,7 +7,7 @@ interface CategoryFilterProps {
     onSelectCategory: (category: string) => void
 }
 
-const categories = ["See All", "Builders", "Eco Projects", "DApps"]
+const categories = ["See All", "Builders", "Eco Projects", "Apps", "Agents"]
 
 export function CategoryFilter({ selectedCategory, onSelectCategory }: CategoryFilterProps) {
     return (

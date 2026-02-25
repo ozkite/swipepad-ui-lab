@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 
 import { Bell, ShoppingCart, Award, Search, Flame, X } from "lucide-react"
 import { Press_Start_2P } from "next/font/google"
@@ -26,7 +26,7 @@ interface DashboardHeaderProps {
     nextLevelXP: number
 }
 
-const categories = ["See All", "Builders", "Eco Projects", "DApps"]
+const categories = ["See All", "Builders", "Eco Projects", "Apps", "Agents"]
 
 export function DashboardHeader({
     donationAmount,
@@ -47,6 +47,16 @@ export function DashboardHeader({
 }: DashboardHeaderProps) {
     const xpProgress = Math.min((currentXP / nextLevelXP) * 100, 100)
     const xpRemaining = Math.max(0, nextLevelXP - currentXP)
+
+    const scrollerRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (!scrollerRef.current) return
+        const activeElement = scrollerRef.current.querySelector('[data-selected="true"]')
+        if (activeElement) {
+            activeElement.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" })
+        }
+    }, [selectedCategory])
 
     return (
         <div className="flex flex-col w-full bg-zinc-950 pb-0.5 pt-1 relative z-50">
@@ -112,8 +122,11 @@ export function DashboardHeader({
             </div>
 
             {/* Zone 2: Filter Row */}
-            <div className="w-full flex flex-nowrap overflow-x-auto scrollbar-hide mb-0.5 no-scrollbar touch-pan-x">
-                <div className="flex items-center gap-2 px-4 pr-6 min-w-max">
+            <div
+                ref={scrollerRef}
+                className="w-full flex flex-nowrap overflow-x-auto scrollbar-hide mb-0.5 no-scrollbar touch-pan-x snap-x snap-mandatory"
+            >
+                <div className="flex items-center gap-2 px-4 pr-6 min-w-max pb-1">
                     {categories.map((category) => {
                         const isSelected = category === selectedCategory
 
@@ -121,7 +134,8 @@ export function DashboardHeader({
                             <button
                                 key={category}
                                 onClick={() => onSelectCategory?.(category)}
-                                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] font-bold transition-all border shrink-0 ${isSelected
+                                data-selected={isSelected}
+                                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-[11px] font-bold transition-all border shrink-0 snap-center ${isSelected
                                     ? "bg-[#F9DE4B] text-black border-[#F9DE4B]"
                                     : "bg-zinc-800/50 text-zinc-400 border-zinc-700 hover:bg-zinc-700"
                                     }`}

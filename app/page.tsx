@@ -26,6 +26,7 @@ import { EditProfile } from "@/components/edit-profile"
 import { SettingsModal } from "@/components/modals/SettingsModal"
 import { BoostModal } from "@/components/modals/BoostModal"
 import { bCardsData, eCardsData, kCardsData } from "@/lib/real_data"
+import agentsData from "@/lib/a_cards.json"
 import { shuffleArray } from "@/lib/utils"
 // Helper to normalize Builder data
 const normalizeBuilders = (data: any[]): Project[] => data.map((item, i) => ({
@@ -84,10 +85,36 @@ const normalizeDapps = (data: any[]): Project[] => data.map((item, i) => ({
   id: `dapp-${i}`,
   name: item.project_name,
   description: item.Description,
-  category: "DApps",
-  categoryType: "dapps",
+  category: "Apps",
+  categoryType: "apps",
   imageUrl: item.project_image,
   website: item.website || item.project_url || undefined,
+  twitter: item.twitter || undefined,
+  github: item.github || undefined,
+  farcaster: item.farcaster || undefined,
+  linkedin: item.linkedin || undefined,
+  fundingGoal: 0,
+  fundingCurrent: 0,
+  likes: 0,
+  comments: 0,
+  walletAddress: item.wallet_address,
+  isBookmarked: false,
+  userHasLiked: false,
+  userHasCommented: false,
+  reportCount: 0,
+  boostAmount: Math.random() > 0.8 ? 100 : 0,
+  verified: false,
+}))
+
+// Helper to normalize Agents data
+const normalizeAgents = (data: any[]): Project[] => data.map((item, i) => ({
+  id: `agent-${i}`,
+  name: item.name || "Unknown Agent",
+  description: item.description,
+  category: "Agents",
+  categoryType: "agents",
+  imageUrl: item.image_url,
+  website: item.website || undefined,
   twitter: item.twitter || undefined,
   github: item.github || undefined,
   farcaster: item.farcaster || undefined,
@@ -202,7 +229,8 @@ export default function Home() {
       const allProjects = [
         ...normalizeBuilders(bCardsData),
         ...normalizeEco(eCardsData),
-        ...normalizeDapps(kCardsData)
+        ...normalizeDapps(kCardsData),
+        ...normalizeAgents(agentsData)
       ]
       setFilteredProjects(shuffleArray(allProjects))
       setLoading(false)
@@ -221,14 +249,17 @@ export default function Home() {
       filtered = [
         ...normalizeBuilders(bCardsData),
         ...normalizeEco(eCardsData),
-        ...normalizeDapps(kCardsData)
+        ...normalizeDapps(kCardsData),
+        ...normalizeAgents(agentsData)
       ]
     } else if (selectedCategory === "Builders") {
       filtered = normalizeBuilders(bCardsData)
     } else if (selectedCategory === "Eco Projects") {
       filtered = normalizeEco(eCardsData)
-    } else if (selectedCategory === "DApps") {
+    } else if (selectedCategory === "Apps") {
       filtered = normalizeDapps(kCardsData)
+    } else if (selectedCategory === "Agents") {
+      filtered = normalizeAgents(agentsData)
     }
 
     // ALWAYS SHUFFLE on category change

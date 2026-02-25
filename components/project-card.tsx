@@ -73,7 +73,7 @@ export interface ProjectCardData {
   image: string
   description: string
   category: string
-  categoryType?: 'builders' | 'eco' | 'dapps'
+  categoryType?: 'builders' | 'eco' | 'apps' | 'agents'
   socials: {
     github?: string
     farcaster?: string
@@ -131,8 +131,10 @@ export function ProjectCard({
         return { text: "BUILDERS", className: "bg-blue-600/90" }
       case 'eco':
         return { text: "ECO PROJECT", className: "bg-emerald-600/90" }
-      case 'dapps':
-        return { text: "DAPP", className: "bg-purple-600/90" }
+      case 'apps':
+        return { text: "APP", className: "bg-purple-600/90" }
+      case 'agents':
+        return { text: "AGENT", className: "bg-orange-500/90 font-pixel" }
       default:
         return { text: "VERIFIED", className: "bg-slate-600/90" }
     }

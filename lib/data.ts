@@ -20,8 +20,10 @@ export interface Project {
   userHasCommented?: boolean
   reportCount?: number
   boostAmount?: number
-  categoryType?: 'builders' | 'eco' | 'dapps'
+  categoryType?: 'builders' | 'eco' | 'apps' | 'agents'
 }
+
+import agentsData from "./a_cards.json"
 
 // Celo Builders projects from the JSON
 const celoBuilderProjects = [
@@ -1756,4 +1758,29 @@ const karmagapProjects: Project[] = projectsData.map((project, index) => ({
   boostAmount: 0,
 }))
 
-export const projects: Project[] = [...buildersProjects, ...ecoProjects, ...karmagapProjects]
+const agentsProjects: Project[] = agentsData.map((agent: any, index: number) => ({
+  id: `agent-${index + 1}`,
+  name: agent.name || "Unknown Agent",
+  description: agent.description || "",
+  category: "Agents",
+  imageUrl:
+    agent.image_url || `/placeholder.svg?height=200&width=300&query=${encodeURIComponent(agent.name || "Agent")}`,
+  website: agent.website || undefined,
+  twitter: agent.twitter || undefined,
+  github: agent.github || undefined,
+  linkedin: agent.linkedin || undefined,
+  farcaster: agent.farcaster || undefined,
+  fundingGoal: Math.floor(Math.random() * 100000) + 10000,
+  fundingCurrent: Math.floor(Math.random() * 50000) + 5000,
+  likes: Math.floor(Math.random() * 500) + 10,
+  comments: Math.floor(Math.random() * 100) + 1,
+  walletAddress: agent.wallet_address || undefined,
+  isBookmarked: false,
+  userHasLiked: false,
+  userHasCommented: false,
+  reportCount: 0,
+  boostAmount: 0,
+  categoryType: 'agents',
+}))
+
+export const projects: Project[] = [...buildersProjects, ...ecoProjects, ...karmagapProjects, ...agentsProjects]

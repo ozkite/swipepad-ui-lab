@@ -66,7 +66,10 @@ export function SlideToApprove({ onComplete }: SlideToApproveProps) {
             style={{ width: trackWidth, height: trackHeight }}
         >
             {/* Background Text */}
-            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+            <div
+                className="absolute inset-y-0 right-0 pr-2 pl-4 flex items-center justify-center z-10 pointer-events-none"
+                style={{ left: handleSize + padding }}
+            >
                 <motion.span
                     className="text-zinc-500 text-base font-normal tracking-wide"
                     initial={{ opacity: 0.5 }}
