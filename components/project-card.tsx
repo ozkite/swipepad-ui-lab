@@ -214,7 +214,7 @@ export function ProjectCard({
         y: [0, 3, -3, 3, -3, 0]
       } : { scale: 1, x: 0, y: 0 }}
       transition={{ duration: 0.2 }}
-      className={`relative w-full h-full rounded-[26px] mt-0 mb-0 mx-auto ${isTurboActive ? 'p-[2px] shadow-[0_0_20px_rgba(255,0,229,0.4)]' : 'p-0 shadow-2xl'} transition-all`}
+      className={`relative w-full max-h-[75vh] h-full rounded-[26px] mt-0 mb-0 mx-auto flex flex-col ${isTurboActive ? 'p-[2px] shadow-[0_0_20px_rgba(255,0,229,0.4)]' : 'p-0 shadow-2xl'} transition-all`}
     >
       {/* Turbo Neon Border Background */}
       {isTurboActive && (
@@ -247,7 +247,7 @@ export function ProjectCard({
       <div className="relative w-full h-full rounded-[24px] overflow-hidden bg-[#0D0D0D] flex flex-col disable-touch-callout select-none z-10">
 
         {/* 1. Container-Centric Image (Aspect 4/5) */}
-        <div className="w-full aspect-[4/5] shrink-0 relative z-0 bg-black rounded-t-[24px] overflow-hidden">
+        <div className="w-full aspect-[4/5] min-h-0 shrink relative z-0 bg-black rounded-t-[24px] overflow-hidden flex items-center justify-center">
           <img
             src={project.image && project.image !== "NA" ? project.image : `/placeholder.svg?height=600&width=400&text=${project.name}`}
             alt={project.name}
@@ -261,6 +261,28 @@ export function ProjectCard({
               {badgeStyle.text}
             </span>
           </div>
+
+          {/* Gamified Boosted Badge */}
+          <AnimatePresence>
+            {isTurboActive && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                className="absolute top-4 right-4 z-10"
+              >
+                <motion.div
+                  animate={{ y: [-2, 2, -2] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="bg-gradient-to-r from-[#7C3AED] to-[#DB2777] text-white font-bold font-pixel text-[9px] uppercase tracking-wider px-2.5 py-1.5 shadow-[0_0_12px_rgba(219,39,119,0.5)] rounded flex items-center gap-1 border border-white/30 backdrop-blur-md"
+                >
+                  <span className="text-xs drop-shadow-md">🔥</span>
+                  <span className="drop-shadow-sm mt-0.5">BOOSTED</span>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Floating Boost Button over Image */}
           <div className="absolute bottom-3 right-3 z-30">
