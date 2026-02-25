@@ -161,84 +161,83 @@ export function ProjectCard({
             {badgeStyle.text}
           </span>
         </div>
-      </div>
-    </div>
 
-      {/* 2. Info Chin (Bottom) - Flexible Height */ }
-  <div className="absolute bottom-0 left-0 right-0 h-auto max-h-[60%] bg-slate-900/95 backdrop-blur-sm rounded-t-3xl z-20 flex flex-col px-4 pt-2 pb-1 border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] justify-end">
-
-    <div className="flex-1 flex flex-col gap-0.5 min-h-0 overflow-hidden">
-      {/* Header: Name + Verification + Boost */}
-      <div className="flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-1.5 min-w-0 pr-2">
-          <h2 className="text-lg font-bold text-white tracking-wide truncate leading-tight">{project.name}</h2>
-          {project.verified && <Zap className="w-4 h-4 text-[#FFD600] fill-current shrink-0" />}
-        </div>
-
+        {/* Floating Boost Button over Image */}
         <button
           onClick={(e) => handleAction(e, onBoost)}
-          className="flex items-center gap-1.5 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white text-[11px] font-bold transition-all shadow-lg hover:shadow-indigo-500/50 animate-pulse border border-indigo-400/30 shrink-0"
+          style={{ marginBottom: '16px' }}
+          className="absolute bottom-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/95 hover:bg-indigo-500 rounded-full text-white text-[11px] font-bold transition-all shadow-[0_4px_15px_rgba(79,70,229,0.5)] hover:shadow-[0_0_20px_rgba(79,70,229,0.8)] animate-pulse border border-indigo-400/30 backdrop-blur-sm"
         >
           <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-xs">✨</span>
           Boost
         </button>
       </div>
 
-      {/* Description */}
-      <div className="relative">
-        <p className="text-sm text-gray-300 font-normal leading-snug line-clamp-2">
-          {project.description}
-        </p>
+      {/* 2. Info Chin (Bottom) - Flexible Height */}
+      <div className="absolute bottom-0 left-0 right-0 h-auto max-h-[60%] bg-slate-900/95 backdrop-blur-sm rounded-t-3xl z-20 flex flex-col px-4 pt-4 pb-1 border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] justify-end">
+
+        <div className="flex-1 flex flex-col gap-0.5 min-h-0 overflow-hidden">
+          {/* Header: Name + Verification */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <h2 className="text-lg font-bold text-white tracking-wide truncate leading-tight">{project.name}</h2>
+            {project.verified && <Zap className="w-4 h-4 text-[#FFD600] fill-current shrink-0" />}
+          </div>
+
+          {/* Description */}
+          <div className="relative">
+            <p className="text-sm text-gray-300 font-normal leading-snug line-clamp-2">
+              {project.description}
+            </p>
+          </div>
+        </div>
+
+        {/* Meta Row: Socials */}
+        <div className="flex items-center my-2 shrink-0">
+          <div className="flex items-center gap-3">
+            {socialLinks.map(({ key, icon: Icon, url }) => (
+              url && url !== "NA" && (
+                <button
+                  key={key}
+                  onClick={(e) => handleExternalLink(e, url)}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <Icon className="w-4 h-4" />
+                </button>
+              )
+            ))}
+          </div>
+        </div>
+
+        {/* Action Area (Pill-shaped 3-Button Layout) */}
+        <div className="flex items-center justify-between gap-2 pb-2 mt-0.5 px-1">
+          {/* Skip (Left) */}
+          <button
+            onClick={(e) => handleAction(e, onSwipeLeft)}
+            className="flex-1 h-12 bg-zinc-800 hover:bg-zinc-700 text-white rounded-[24px] flex items-center justify-center gap-2 transition-all active:scale-95 border border-zinc-700/50 shadow-lg"
+          >
+            <X className="w-5 h-5" />
+            <span className="text-base font-medium">Skip</span>
+          </button>
+
+          {/* Revert (Center) */}
+          <button
+            onClick={(e) => handleAction(e, onRewind)}
+            className="w-11 h-11 bg-zinc-800 hover:bg-zinc-700 text-blue-400 rounded-full flex items-center justify-center transition-all active:scale-95 shrink-0 border border-zinc-700/50 shadow-md"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+
+          {/* Like (Right) */}
+          <button
+            onClick={(e) => handleAction(e, onSwipeRight)}
+            className="flex-1 h-12 bg-[#F9DE4B] hover:bg-[#F7CE00] text-black rounded-[24px] flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-yellow-900/10"
+          >
+            <ThumbsUp className="w-5 h-5 stroke-[2.5px]" />
+            <span className="text-base font-medium">Like</span>
+          </button>
+        </div>
+
       </div>
-    </div>
-
-    {/* Meta Row: Socials */}
-    <div className="flex items-center my-2 shrink-0">
-      <div className="flex items-center gap-3">
-        {socialLinks.map(({ key, icon: Icon, url }) => (
-          url && url !== "NA" && (
-            <button
-              key={key}
-              onClick={(e) => handleExternalLink(e, url)}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              <Icon className="w-4 h-4" />
-            </button>
-          )
-        ))}
-      </div>
-    </div>
-
-    {/* Action Area (Pill-shaped 3-Button Layout) */}
-    <div className="flex items-center justify-between gap-2 pb-2 mt-0.5 px-1">
-      {/* Skip (Left) */}
-      <button
-        onClick={(e) => handleAction(e, onSwipeLeft)}
-        className="flex-1 h-12 bg-zinc-800 hover:bg-zinc-700 text-white rounded-[24px] flex items-center justify-center gap-2 transition-all active:scale-95 border border-zinc-700/50 shadow-lg"
-      >
-        <X className="w-5 h-5" />
-        <span className="text-base font-medium">Skip</span>
-      </button>
-
-      {/* Revert (Center) */}
-      <button
-        onClick={(e) => handleAction(e, onRewind)}
-        className="w-11 h-11 bg-zinc-800 hover:bg-zinc-700 text-blue-400 rounded-full flex items-center justify-center transition-all active:scale-95 shrink-0 border border-zinc-700/50 shadow-md"
-      >
-        <RotateCcw className="w-4 h-4" />
-      </button>
-
-      {/* Like (Right) */}
-      <button
-        onClick={(e) => handleAction(e, onSwipeRight)}
-        className="flex-1 h-12 bg-[#F9DE4B] hover:bg-[#F7CE00] text-black rounded-[24px] flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-yellow-900/10"
-      >
-        <ThumbsUp className="w-5 h-5 stroke-[2.5px]" />
-        <span className="text-base font-medium">Like</span>
-      </button>
-    </div>
-
-  </div>
 
     </div >
   )
