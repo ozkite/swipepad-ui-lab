@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { Heart, MessageCircle, Flag, Zap, RotateCcw, ThumbsUp, X, Share2, MoreVertical, Rocket } from "lucide-react"
+import { Heart, MessageCircle, Flag, Zap, RotateCcw, ThumbsUp, X, Share2, MoreVertical, Rocket, Flame } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 // -- Turbo Components --
@@ -278,7 +278,7 @@ export function ProjectCard({
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                   className="bg-gradient-to-r from-[#7C3AED] to-[#DB2777] text-white font-bold font-pixel text-[9px] uppercase tracking-wider px-2.5 py-1.5 shadow-[0_0_12px_rgba(219,39,119,0.5)] rounded flex items-center gap-1 border border-white/30 backdrop-blur-md"
                 >
-                  <span className="text-xs drop-shadow-md">🔥</span>
+                  <Rocket className="w-3 h-3 fill-current drop-shadow-md" />
                   <span className="drop-shadow-sm mt-0.5">BOOSTED</span>
                 </motion.div>
               </motion.div>

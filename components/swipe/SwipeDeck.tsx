@@ -4,7 +4,7 @@ import { useState } from "react"
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
 import { ProjectCard, type ProjectCardData } from "@/components/project-card"
 import type { Project } from "@/lib/data"
-import { ThumbsUp, X, Zap } from "lucide-react"
+import { ThumbsUp, X, Zap, Rocket, Flame } from "lucide-react"
 
 interface SwipeDeckProps {
     projects: Project[]
@@ -139,15 +139,15 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
                                 </span>
                                 {discoveryTab === "boosted" && project.boostAmount && project.boostAmount > 0 ? (
                                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-gradient-to-r from-[#7C3AED]/20 to-[#DB2777]/20 text-[#DB2777] font-bold border border-[#DB2777]/30 flex items-center gap-1">
-                                        🚀 Boosted
+                                        <Rocket className="w-3 h-3 fill-current" /> Boosted
                                     </span>
                                 ) : discoveryTab === "trending" && project.likes !== undefined ? (
                                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 font-bold border border-orange-500/30 flex items-center gap-1">
-                                        🔥 Trending
+                                        <Flame className="w-3 h-3 fill-current" /> Trending
                                     </span>
                                 ) : project.boostAmount && project.boostAmount > 0 ? (
                                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 flex items-center gap-1">
-                                        🔥 Trending
+                                        <Flame className="w-3 h-3 fill-current" /> Trending
                                     </span>
                                 ) : null}
                             </div>

@@ -19,7 +19,7 @@ import { StarryBackground } from "@/components/starry-background"
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader"
 import { MobileMockup } from "@/components/mobile-mockup"
 import { useMobile } from "@/hooks/use-mobile"
-import { Search } from "lucide-react"
+import { Search, Flame, Rocket } from "lucide-react"
 import { ProjectRegistrationForm } from "@/components/project-registration-form"
 import { SocialHub } from "@/components/profile/SocialHub"
 import { EditProfile } from "@/components/edit-profile"
@@ -478,16 +478,16 @@ export default function Home() {
                             : "text-gray-400 hover:text-white"
                             }`}
                         >
-                          <span className="text-sm">🔥</span> Trending
+                          <span className="flex items-center justify-center w-5 h-5"><Flame className="w-4 h-4 fill-current" /></span> Trending
                         </button>
                         <button
                           onClick={() => setDiscoveryTab("boosted")}
-                          className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${discoveryTab === "boosted"
+                          className={`flex-1 py-1.5 rounded-md text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${discoveryTab === "boosted"
                             ? "bg-[#F9DE4B] text-black shadow-lg"
                             : "text-gray-400 hover:text-white"
                             }`}
                         >
-                          <span className="text-sm">🚀</span> Boosted
+                          <span className="flex items-center justify-center w-5 h-5"><Rocket className="w-4 h-4 fill-current" /></span> Boosted
                         </button>
                       </div>
                     )}
