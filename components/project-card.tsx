@@ -214,17 +214,18 @@ export function ProjectCard({
         y: [0, 3, -3, 3, -3, 0]
       } : { scale: 1, x: 0, y: 0 }}
       transition={{ duration: 0.2 }}
-      className={`relative w-full max-h-[75vh] h-full rounded-[26px] mt-0 mb-0 mx-auto flex flex-col ${isTurboActive ? 'p-[2px] shadow-[0_0_20px_rgba(255,0,229,0.4)]' : 'p-0 shadow-2xl'} transition-all`}
+      className={`relative w-full max-h-[75vh] h-full rounded-[26px] mt-0 mb-0 mx-auto flex flex-col ${isTurboActive ? 'p-[1px] shadow-[0_0_20px_rgba(255,0,229,0.4)]' : 'p-0 shadow-2xl'} transition-all`}
     >
       {/* Turbo Neon Border Background */}
       {isTurboActive && (
         <motion.div
           className="absolute inset-0 rounded-[26px] z-0 overflow-hidden"
           style={{
-            background: 'conic-gradient(from 0deg at 50% 50%, #00FFF0 0deg, #FF00E5 180deg, #E2FF3B 270deg, #00FFF0 360deg)'
+            background: 'linear-gradient(45deg, #00FFF0, #FF00E5, #E2FF3B, #00FFF0)',
+            backgroundSize: '300% 300%'
           }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+          animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
         />
       )}
 

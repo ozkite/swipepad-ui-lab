@@ -73,9 +73,9 @@ export function SocialHub({ isOpen, onClose, userStats }: SocialHubProps) {
                             <div>
                                 <h2 className={`text-xl font-bold text-[#F9DE4B] flex items-center gap-2 ${pixelFont.className}`}>
                                     <Trophy className="w-5 h-5" />
-                                    BADGE VAULT
+                                    LEADERBOARD
                                 </h2>
-                                <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-wider font-bold">Global Rankings & Achievements</p>
+                                <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-wider font-bold">GLOBAL RANKINGS & ACHIEVEMENTS</p>
                             </div>
                             <button
                                 onClick={onClose}

@@ -142,7 +142,7 @@ export default function Home() {
 
   // Search & Trending State
   const [searchQuery, setSearchQuery] = useState("")
-  const [isTrending, setIsTrending] = useState(false)
+  const [discoveryTab, setDiscoveryTab] = useState<"hidden" | "trending" | "boosted">("hidden")
 
   // Cart & checkout state
   const [cart, setCart] = useState<Array<{ project: any; amount: number; currency: StableCoin; message?: string }>>([])
@@ -282,19 +282,28 @@ export default function Home() {
 
   // Derived Projects for Display (Search/Trending)
   const displayProjects = useMemo(() => {
-    if (!searchQuery && !isTrending) return filteredProjects
+    if (!searchQuery && discoveryTab === "hidden") return filteredProjects
 
-    return filteredProjects.filter(p => {
+    let filtered = filteredProjects.filter(p => {
       const matchesSearch = searchQuery
         ? (p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           p.description.toLowerCase().includes(searchQuery.toLowerCase()))
         : true
-      const matchesTrending = isTrending
-        ? (p.boostAmount && p.boostAmount > 0)
-        : true
+      const matchesTrending = discoveryTab === "trending"
+        ? true // Trending shows all (potentially sorted by score later)
+        : discoveryTab === "boosted"
+          ? (p.boostAmount && p.boostAmount > 0)
+          : true
       return matchesSearch && matchesTrending
     })
-  }, [filteredProjects, searchQuery, isTrending])
+
+    // Limit pure discovery lists to 6 items
+    if (discoveryTab !== "hidden" && !searchQuery) {
+      return filtered.slice(0, 6)
+    }
+
+    return filtered
+  }, [filteredProjects, searchQuery, discoveryTab])
 
   // -- Handlers --
 
@@ -441,8 +450,15 @@ export default function Home() {
                   onEditAmount={() => setShowSettings(true)}
                   onOpenNotifications={() => console.log("Notifications")}
                   onOpenLeaderboard={() => setShowSocialHub(true)}
-                  isTrending={isTrending}
-                  onToggleTrending={() => setIsTrending(prev => !prev)}
+                  isTrending={discoveryTab !== "hidden"}
+                  onToggleTrending={() => {
+                    if (discoveryTab === "hidden") {
+                      setDiscoveryTab("trending")
+                      setFilteredProjects(prev => shuffleArray([...prev]))
+                    } else {
+                      setDiscoveryTab("hidden")
+                    }
+                  }}
                   level={level}
                   currentXP={currentXP}
                   nextLevelXP={nextLevelXP}
@@ -451,20 +467,47 @@ export default function Home() {
                 <div className="flex-1 relative flex flex-col px-4 pt-0">
 
                   {/* Zone 4: The Swipe Deck (Fixed Spacing, Top Anchored) */}
-                  <div className="flex-1 flex justify-center pt-0 pb-16">
-                    <SwipeDeck
-                      projects={displayProjects}
-                      activeIndex={currentProjectIndex}
-                      onSwipeLeft={handleSwipeLeft}
-                      onSwipeRight={handleSwipeRight}
-                      onRewind={handleRewind}
-                      onBoost={() => setShowBoostModal(true)}
-                      isListMode={!!searchQuery || isTrending}
-                      onClearSearch={() => {
-                        setSearchQuery("")
-                        setIsTrending(false)
-                      }}
-                    />
+                  <div className="flex-1 flex flex-col pt-0 pb-16">
+                    {/* Segmented Discovery Header */}
+                    {discoveryTab !== "hidden" && (
+                      <div className="flex p-1 bg-zinc-900 rounded-xl mb-3 shrink-0 mx-auto w-full max-w-sm">
+                        <button
+                          onClick={() => setDiscoveryTab("trending")}
+                          className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${discoveryTab === "trending"
+                            ? "bg-[#F9DE4B] text-black shadow-lg"
+                            : "text-gray-400 hover:text-white"
+                            }`}
+                        >
+                          <span className="text-sm">🔥</span> Trending
+                        </button>
+                        <button
+                          onClick={() => setDiscoveryTab("boosted")}
+                          className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${discoveryTab === "boosted"
+                            ? "bg-[#F9DE4B] text-black shadow-lg"
+                            : "text-gray-400 hover:text-white"
+                            }`}
+                        >
+                          <span className="text-sm">🚀</span> Boosted
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="flex-1 flex justify-center">
+                      <SwipeDeck
+                        projects={displayProjects}
+                        activeIndex={currentProjectIndex}
+                        onSwipeLeft={handleSwipeLeft}
+                        onSwipeRight={handleSwipeRight}
+                        onRewind={handleRewind}
+                        onBoost={() => setShowBoostModal(true)}
+                        isListMode={!!searchQuery || discoveryTab !== "hidden"}
+                        onClearSearch={() => {
+                          setSearchQuery("")
+                          setDiscoveryTab("hidden")
+                        }}
+                        discoveryTab={discoveryTab}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -547,7 +590,7 @@ export default function Home() {
           setViewMode(v as any)
           if (v === "swipe") {
             setSelectedCategory("See All")
-            setIsTrending(false)
+            setDiscoveryTab("hidden")
             setSearchQuery("")
           }
         }}

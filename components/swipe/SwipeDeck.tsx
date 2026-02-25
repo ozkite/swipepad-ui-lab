@@ -15,9 +15,10 @@ interface SwipeDeckProps {
     activeIndex: number
     isListMode?: boolean
     onClearSearch?: () => void
+    discoveryTab?: "hidden" | "trending" | "boosted"
 }
 
-export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoost, activeIndex, isListMode = false, onClearSearch }: SwipeDeckProps) {
+export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoost, activeIndex, isListMode = false, onClearSearch, discoveryTab = "hidden" }: SwipeDeckProps) {
     const [exitDirection, setExitDirection] = useState<"left" | "right" | null>(null)
 
     // We show the active card and the next one for the stack effect
@@ -124,7 +125,7 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
                     <motion.div
                         key={project.id}
                         variants={listItemVariants}
-                        className="bg-gray-900/80 border border-gray-800 p-3 rounded-xl flex gap-3 items-center backdrop-blur-sm"
+                        className="bg-gray-900/80 border border-gray-800 p-3 rounded-xl flex gap-3 items-center backdrop-blur-sm transition-all"
                     >
                         <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-gray-800">
                             <img src={project.imageUrl} alt={project.name} className="w-full h-full object-cover" />
@@ -136,7 +137,15 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
                                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-300">
                                     {project.category}
                                 </span>
-                                {project.boostAmount && project.boostAmount > 0 ? (
+                                {discoveryTab === "boosted" && project.boostAmount && project.boostAmount > 0 ? (
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-gradient-to-r from-[#7C3AED]/20 to-[#DB2777]/20 text-[#DB2777] font-bold border border-[#DB2777]/30 flex items-center gap-1">
+                                        🚀 Boosted
+                                    </span>
+                                ) : discoveryTab === "trending" && project.likes !== undefined ? (
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 font-bold border border-orange-500/30 flex items-center gap-1">
+                                        🔥 Trending
+                                    </span>
+                                ) : project.boostAmount && project.boostAmount > 0 ? (
                                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 flex items-center gap-1">
                                         🔥 Trending
                                     </span>
