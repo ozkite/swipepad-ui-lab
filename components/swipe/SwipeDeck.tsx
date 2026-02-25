@@ -42,7 +42,8 @@ export function SwipeDeck({ projects, onSwipeLeft, onSwipeRight, onRewind, onBoo
             twitter: activeProject.twitter,
             website: activeProject.website,
             linkedin: activeProject.linkedin
-        }
+        },
+        boostAmount: activeProject.boostAmount
     } : null
 
     // Framer Motion Swipe Logic

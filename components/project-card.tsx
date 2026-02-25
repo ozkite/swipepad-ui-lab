@@ -118,6 +118,7 @@ export interface ProjectCardData {
     linkedin?: string
   }
   verified?: boolean
+  boostAmount?: number
 }
 
 interface ProjectCardProps {
@@ -178,16 +179,17 @@ export function ProjectCard({
 
   const [isBoosting, setIsBoosting] = useState(false)
   const [showParticles, setShowParticles] = useState(false)
+  const [isTurboActive, setIsTurboActive] = useState(project.boostAmount && project.boostAmount > 0 ? true : false)
 
   const handleTurboBoost = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (isBoosting) return
+    if (isBoosting || isTurboActive) return
 
-    // Trigger Haptics
+    // Trigger Haptics: Heavy impact followed by high-frequency vibration pulse
     if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
-      window.navigator.vibrate([40, 30, 40])
+      window.navigator.vibrate([50, 20, 10, 20, 10])
     }
 
     setIsBoosting(true)
@@ -198,7 +200,8 @@ export function ProjectCard({
 
     setTimeout(() => {
       setIsBoosting(false)
-    }, 400)
+      setIsTurboActive(true)
+    }, 600) // Updated to 600ms matching radial blast
   }
 
   const badgeStyle = getCategoryStyles(project.categoryType)
@@ -207,123 +210,137 @@ export function ProjectCard({
     <motion.div
       animate={isBoosting ? {
         scale: [1, 0.95, 1.05, 1],
-        x: [0, -2, 2, -2, 2, 0],
-        y: [0, 2, -2, 2, -2, 0]
+        x: [0, -3, 3, -3, 3, 0],
+        y: [0, 3, -3, 3, -3, 0]
       } : { scale: 1, x: 0, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="relative w-full h-full rounded-[24px] overflow-hidden shadow-2xl bg-[#0D0D0D] flex flex-col disable-touch-callout select-none border border-[#1A1A1A]"
+      transition={{ duration: 0.2 }}
+      className={`relative w-full h-full rounded-[26px] mt-0 mb-0 mx-auto ${isTurboActive ? 'p-[2px] shadow-[0_0_20px_rgba(255,0,229,0.4)]' : 'p-0 shadow-2xl'} transition-all`}
     >
-
-      {/* 1. Container-Centric Image (Aspect 4/5) */}
-      <div className="w-full aspect-[4/5] shrink-0 relative z-0 bg-black rounded-t-[24px] overflow-hidden">
-        <img
-          src={project.image && project.image !== "NA" ? project.image : `/placeholder.svg?height=600&width=400&text=${project.name}`}
-          alt={project.name}
-          className="w-full h-full object-cover object-top absolute inset-0 rounded-t-[24px]"
-          draggable={false}
+      {/* Turbo Neon Border Background */}
+      {isTurboActive && (
+        <motion.div
+          className="absolute inset-0 rounded-[26px] z-0 overflow-hidden"
+          style={{
+            background: 'conic-gradient(from 0deg at 50% 50%, #00FFF0 0deg, #FF00E5 180deg, #E2FF3B 270deg, #00FFF0 360deg)'
+          }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
         />
+      )}
 
-        {/* Turbo Shockwave (Conditional) */}
-        <AnimatePresence>
-          {isBoosting && (
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0.6 }}
-              animate={{ scale: 2.0, opacity: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="absolute inset-0 z-20 mix-blend-screen pointer-events-none"
-              style={{
-                background: "radial-gradient(circle at center, rgba(226, 255, 59, 0.8) 0%, rgba(255, 0, 229, 0.4) 40%, rgba(0, 255, 240, 0) 70%)"
-              }}
-            />
-          )}
-        </AnimatePresence>
+      {/* Turbo Radial Blast (Behind Card, 600ms) */}
+      <AnimatePresence>
+        {isBoosting && (
+          <motion.div
+            initial={{ scale: 0.5, opacity: 1 }}
+            animate={{ scale: 2.0, opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="absolute inset-[-50%] z-0 pointer-events-none rounded-full blur-xl"
+            style={{
+              background: "radial-gradient(circle, rgba(0,255,240,0.8) 0%, rgba(255,0,229,0.6) 40%, rgba(226,255,59,0.3) 70%, transparent 100%)"
+            }}
+          />
+        )}
+      </AnimatePresence>
 
-        {/* Category Badge */}
-        <div className={`absolute top-4 left-4 z-10 ${badgeStyle.className} text-white font-bold text-[10px] uppercase tracking-wider px-3 py-1 shadow-sm rounded-full`}>
-          <span>
-            {badgeStyle.text}
-          </span>
-        </div>
+      <div className="relative w-full h-full rounded-[24px] overflow-hidden bg-[#0D0D0D] flex flex-col disable-touch-callout select-none z-10">
 
-        {/* Floating Boost Button over Image */}
-        <div className="absolute bottom-3 right-3 z-30">
-          <button
-            onClick={handleTurboBoost}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white text-[11px] font-bold transition-all backdrop-blur-md border border-indigo-400/30 ${isBoosting
+        {/* 1. Container-Centric Image (Aspect 4/5) */}
+        <div className="w-full aspect-[4/5] shrink-0 relative z-0 bg-black rounded-t-[24px] overflow-hidden">
+          <img
+            src={project.image && project.image !== "NA" ? project.image : `/placeholder.svg?height=600&width=400&text=${project.name}`}
+            alt={project.name}
+            className="w-full h-full object-cover object-top absolute inset-0 rounded-t-[24px]"
+            draggable={false}
+          />
+
+          {/* Category Badge */}
+          <div className={`absolute top-4 left-4 z-10 ${badgeStyle.className} text-white font-bold text-[10px] uppercase tracking-wider px-3 py-1 shadow-sm rounded-full`}>
+            <span>
+              {badgeStyle.text}
+            </span>
+          </div>
+
+          {/* Floating Boost Button over Image */}
+          <div className="absolute bottom-3 right-3 z-30">
+            <button
+              onClick={handleTurboBoost}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white text-[11px] font-bold transition-all backdrop-blur-md border border-indigo-400/30 ${isBoosting
                 ? "bg-indigo-400 scale-90 shadow-[0_0_30px_rgba(255,0,229,0.8)]"
                 : "bg-indigo-600/80 hover:bg-indigo-500 shadow-[0_4px_15px_rgba(79,70,229,0.5)] hover:shadow-[0_0_20px_rgba(79,70,229,0.8)] animate-pulse"
-              }`}
-          >
-            <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-xs">✨</span>
-            Boost
-          </button>
-          {showParticles && <ParticleBurst onComplete={() => setShowParticles(false)} />}
-        </div>
-      </div>
-
-      {/* 2. Info Chin (Bottom) - Flexible Height */}
-      <div className="flex-1 flex flex-col px-4 pt-3 pb-2 justify-between z-20 bg-[#0D0D0D]">
-
-        <div className="flex flex-col gap-1 min-h-0 overflow-hidden">
-          {/* Header: Name + Verification */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            <h2 className="text-lg font-bold text-white tracking-wide truncate leading-tight">{project.name}</h2>
-            {project.verified && <Zap className="w-4 h-4 text-[#FFD600] fill-current shrink-0" />}
-          </div>
-
-          {/* Description */}
-          <p className="text-sm text-gray-400 font-normal leading-snug line-clamp-2">
-            {project.description}
-          </p>
-
-          {/* Meta Row: Socials */}
-          <div className="flex items-center gap-3 shrink-0 mt-0.5">
-            {socialLinks.map(({ key, icon: Icon, url }) => (
-              url && url !== "NA" && (
-                <button
-                  key={key}
-                  onClick={(e) => handleExternalLink(e, url)}
-                  className="text-gray-500 hover:text-gray-300 transition-colors"
-                >
-                  <Icon className="w-4 h-4" />
-                </button>
-              )
-            ))}
+                }`}
+            >
+              <span className="drop-shadow-[0_0_4px_rgba(250,204,21,0.8)] text-xs">✨</span>
+              Boost
+            </button>
+            {showParticles && <ParticleBurst onComplete={() => setShowParticles(false)} />}
           </div>
         </div>
 
-        {/* Action Area (Pill-shaped 3-Button Layout) */}
-        <div className="flex items-center justify-between gap-2 pb-2 mt-0.5 px-1">
-          {/* Skip (Left) */}
-          <button
-            onClick={(e) => handleAction(e, onSwipeLeft)}
-            className="flex-1 h-12 bg-zinc-800 hover:bg-zinc-700 text-white rounded-[24px] flex items-center justify-center gap-2 transition-all active:scale-95 border border-zinc-700/50 shadow-lg"
-          >
-            <X className="w-5 h-5" />
-            <span className="text-base font-medium">Skip</span>
-          </button>
+        {/* 2. Info Chin (Bottom) - Flexible Height */}
+        <div className="flex-1 flex flex-col px-4 pt-3 pb-2 justify-between z-20 bg-[#0D0D0D]">
 
-          {/* Revert (Center) */}
-          <button
-            onClick={(e) => handleAction(e, onRewind)}
-            className="w-11 h-11 bg-zinc-800 hover:bg-zinc-700 text-blue-400 rounded-full flex items-center justify-center transition-all active:scale-95 shrink-0 border border-zinc-700/50 shadow-md"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
+          <div className="flex flex-col gap-1 min-h-0 overflow-hidden">
+            {/* Header: Name + Verification */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <h2 className="text-lg font-bold text-white tracking-wide truncate leading-tight">{project.name}</h2>
+              {project.verified && <Zap className="w-4 h-4 text-[#FFD600] fill-current shrink-0" />}
+            </div>
 
-          {/* Like (Right) */}
-          <button
-            onClick={(e) => handleAction(e, onSwipeRight)}
-            className="flex-1 h-12 bg-[#F9DE4B] hover:bg-[#F7CE00] text-black rounded-[24px] flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-yellow-900/10"
-          >
-            <ThumbsUp className="w-5 h-5 stroke-[2.5px]" />
-            <span className="text-base font-medium">Like</span>
-          </button>
+            {/* Description */}
+            <p className="text-sm text-gray-400 font-normal leading-snug line-clamp-2">
+              {project.description}
+            </p>
+
+            {/* Meta Row: Socials */}
+            <div className="flex items-center gap-3 shrink-0 mt-0.5">
+              {socialLinks.map(({ key, icon: Icon, url }) => (
+                url && url !== "NA" && (
+                  <button
+                    key={key}
+                    onClick={(e) => handleExternalLink(e, url)}
+                    className="text-gray-500 hover:text-gray-300 transition-colors"
+                  >
+                    <Icon className="w-4 h-4" />
+                  </button>
+                )
+              ))}
+            </div>
+          </div>
+
+          {/* Action Area (Pill-shaped 3-Button Layout) */}
+          <div className="flex items-center justify-between gap-2 pb-2 mt-0.5 px-1">
+            {/* Skip (Left) */}
+            <button
+              onClick={(e) => handleAction(e, onSwipeLeft)}
+              className="flex-1 h-12 bg-zinc-800 hover:bg-zinc-700 text-white rounded-[24px] flex items-center justify-center gap-2 transition-all active:scale-95 border border-zinc-700/50 shadow-lg"
+            >
+              <X className="w-5 h-5" />
+              <span className="text-base font-medium">Skip</span>
+            </button>
+
+            {/* Revert (Center) */}
+            <button
+              onClick={(e) => handleAction(e, onRewind)}
+              className="w-11 h-11 bg-zinc-800 hover:bg-zinc-700 text-blue-400 rounded-full flex items-center justify-center transition-all active:scale-95 shrink-0 border border-zinc-700/50 shadow-md"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+
+            {/* Like (Right) */}
+            <button
+              onClick={(e) => handleAction(e, onSwipeRight)}
+              className="flex-1 h-12 bg-[#F9DE4B] hover:bg-[#F7CE00] text-black rounded-[24px] flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-yellow-900/10"
+            >
+              <ThumbsUp className="w-5 h-5 stroke-[2.5px]" />
+              <span className="text-base font-medium">Like</span>
+            </button>
+          </div>
+
         </div>
 
       </div>
-
     </motion.div >
   )
 }
