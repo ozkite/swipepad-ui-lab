@@ -247,7 +247,10 @@ export function ProjectCard({
         )}
       </AnimatePresence>
 
-      <div className="relative w-full h-full rounded-[24px] overflow-hidden bg-[#0D0D0D] flex flex-col disable-touch-callout select-none z-10">
+      {/* Solid Black Backer to Prevent White Flashing */}
+      <div className="absolute inset-[1px] rounded-[25px] bg-black z-[5]" />
+
+      <div className="relative w-full h-full rounded-[25px] overflow-hidden bg-[#0D0D0D] flex flex-col disable-touch-callout select-none z-10">
 
         {/* 1. Container-Centric Image (Aspect Square) */}
         <div className="w-full aspect-square min-h-0 shrink relative z-0 bg-black rounded-t-[24px] overflow-hidden flex items-center justify-center border-b border-zinc-800/50">
