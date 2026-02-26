@@ -15,9 +15,9 @@ export function BottomNav({ currentView, onChangeView }: BottomNavProps) {
     )
 
     const navItems = [
-        { id: "swipe", icon: Home, label: "Home" },
+        { id: "profile", icon: UserIcon, label: "Profile" },
         { id: "trending", icon: TrendingUp, label: "Stats" },
-        { id: "action", icon: HandIcon, label: "" },
+        { id: "swipe", icon: Home, label: "Home" },
         { id: "wallet", icon: Search, label: "Search" },
         { id: "settings", icon: Settings, label: "Settings" },
     ]
@@ -32,24 +32,16 @@ export function BottomNav({ currentView, onChangeView }: BottomNavProps) {
                         className={cn(
                             "flex flex-col items-center justify-center w-12 h-10 space-y-1 transition-all duration-200",
                             currentView === item.id
-                                ? "text-[#E2FF3B]"
-                                : "text-gray-500 hover:text-gray-300",
-                            item.id === "action" ? "-mt-4 w-14 h-14 bg-white/5 rounded-full border border-white/10" : ""
+                                ? "text-[#E5FF53]"
+                                : "text-gray-500 hover:text-gray-300"
                         )}
                     >
-                        {item.id === "action" ? (
-                            <item.icon className={cn(
-                                "transition-transform",
-                                currentView === item.id ? "scale-110 drop-shadow-[0_0_15px_rgba(226,255,59,0.5)]" : "scale-100"
-                            )} />
-                        ) : (
-                            <item.icon className={cn("w-[22px] h-[22px]", currentView === item.id ? "stroke-[2.5px] drop-shadow-[0_0_8px_rgba(226,255,59,0.5)] transition-all" : "stroke-2")} />
-                        )}
+                        <item.icon className={cn("w-[22px] h-[22px]", currentView === item.id ? "stroke-[2.5px] drop-shadow-[0_0_8px_rgba(229,255,83,0.5)] transition-all" : "stroke-2")} />
 
                         {item.label && (
                             <span className={cn(
                                 "text-[9px] font-medium tracking-wide",
-                                currentView === item.id ? "font-bold text-[#E2FF3B]" : ""
+                                currentView === item.id ? "font-bold text-[#E5FF53]" : ""
                             )}>
                                 {item.label}
                             </span>
