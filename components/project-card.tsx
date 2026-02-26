@@ -169,7 +169,7 @@ export function ProjectCard({
       case 'eco':
         return { text: "ECO PROJECT", className: "bg-emerald-600/90" }
       case 'apps':
-        return { text: "APP", className: "bg-purple-600/90" }
+        return { text: "DAPP", className: "bg-purple-600/90" }
       case 'agents':
         return { text: "AGENT", className: "bg-orange-500/90 font-pixel" }
       case 'descience':

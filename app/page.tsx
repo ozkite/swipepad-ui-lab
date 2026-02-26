@@ -87,7 +87,7 @@ const normalizeDapps = (data: any[]): Project[] => data.map((item, i) => ({
   id: `dapp-${i}`,
   name: item.project_name,
   description: item.Description,
-  category: "Apps",
+  category: "DApps",
   categoryType: "apps",
   imageUrl: item.project_image,
   website: item.website || item.project_url || undefined,
@@ -286,7 +286,7 @@ export default function Home() {
       filtered = normalizeBuilders(bCardsData)
     } else if (selectedCategory === "Eco Projects") {
       filtered = normalizeEco(eCardsData)
-    } else if (selectedCategory === "Apps") {
+    } else if (selectedCategory === "DApps") {
       filtered = normalizeDapps(kCardsData)
     } else if (selectedCategory === "Agents") {
       filtered = normalizeAgents(agentsData)
