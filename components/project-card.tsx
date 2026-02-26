@@ -109,7 +109,7 @@ export interface ProjectCardData {
   image: string
   description: string
   category: string
-  categoryType?: 'builders' | 'eco' | 'apps' | 'agents' | 'dapps'
+  categoryType?: 'builders' | 'eco' | 'apps' | 'agents' | 'descience'
   socials: {
     github?: string
     farcaster?: string
@@ -172,8 +172,8 @@ export function ProjectCard({
         return { text: "APP", className: "bg-purple-600/90" }
       case 'agents':
         return { text: "AGENT", className: "bg-orange-500/90 font-pixel" }
-      case 'dapps':
-        return { text: "DAPP", className: "bg-cyan-600/90" }
+      case 'descience':
+        return { text: "DESCIENCE", className: "bg-cyan-500/90 text-black font-pixel shadow-[0_0_15px_rgba(6,182,212,0.8)] border border-cyan-400/50" }
       default:
         return { text: "VERIFIED", className: "bg-slate-600/90" }
     }
@@ -249,12 +249,12 @@ export function ProjectCard({
 
       <div className="relative w-full h-full rounded-[24px] overflow-hidden bg-[#0D0D0D] flex flex-col disable-touch-callout select-none z-10">
 
-        {/* 1. Container-Centric Image (Aspect 4/5) */}
-        <div className="w-full aspect-[4/5] min-h-0 shrink relative z-0 bg-black rounded-t-[24px] overflow-hidden flex items-center justify-center">
+        {/* 1. Container-Centric Image (Aspect Square) */}
+        <div className="w-full aspect-square min-h-0 shrink relative z-0 bg-black rounded-t-[24px] overflow-hidden flex items-center justify-center border-b border-zinc-800/50">
           <img
             src={project.image && project.image !== "NA" ? project.image : `/placeholder.svg?height=600&width=400&text=${project.name}`}
             alt={project.name}
-            className="w-full h-full object-cover object-top absolute inset-0 rounded-t-[24px]"
+            className="w-full h-full object-cover absolute inset-0"
             draggable={false}
           />
 

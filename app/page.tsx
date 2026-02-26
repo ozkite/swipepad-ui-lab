@@ -134,13 +134,13 @@ const normalizeAgents = (data: any[]): Project[] => data.map((item, i) => ({
   verified: false,
 }))
 
-// Helper to normalize DApps Category data
-const normalizeDAppsCategory = (data: any[]): Project[] => data.map((item, i) => ({
-  id: `dapps-${i}`,
-  name: item.name || "Unknown DApp",
+// Helper to normalize DeScience Category data
+const normalizeDeScienceCategory = (data: any[]): Project[] => data.map((item, i) => ({
+  id: `descience-${i}`,
+  name: item.name || "Unknown DeScience Project",
   description: item.description,
-  category: "DApps",
-  categoryType: "dapps",
+  category: "DeScience",
+  categoryType: "descience",
   imageUrl: item.image_url,
   website: item.website || item.project_url || undefined,
   twitter: item.twitter || undefined,
@@ -259,7 +259,7 @@ export default function Home() {
         ...normalizeEco(eCardsData),
         ...normalizeDapps(kCardsData),
         ...normalizeAgents(agentsData),
-        ...normalizeDAppsCategory(dCardsData)
+        ...normalizeDeScienceCategory(dCardsData)
       ]
       setFilteredProjects(shuffleArray(allProjects))
       setLoading(false)
@@ -280,7 +280,7 @@ export default function Home() {
         ...normalizeEco(eCardsData),
         ...normalizeDapps(kCardsData),
         ...normalizeAgents(agentsData),
-        ...normalizeDAppsCategory(dCardsData)
+        ...normalizeDeScienceCategory(dCardsData)
       ]
     } else if (selectedCategory === "Builders") {
       filtered = normalizeBuilders(bCardsData)
@@ -290,8 +290,8 @@ export default function Home() {
       filtered = normalizeDapps(kCardsData)
     } else if (selectedCategory === "Agents") {
       filtered = normalizeAgents(agentsData)
-    } else if (selectedCategory === "DApps") {
-      filtered = normalizeDAppsCategory(dCardsData)
+    } else if (selectedCategory === "DeScience") {
+      filtered = normalizeDeScienceCategory(dCardsData)
     }
 
     // ALWAYS SHUFFLE on category change

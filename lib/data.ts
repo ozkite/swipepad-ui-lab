@@ -20,7 +20,7 @@ export interface Project {
   userHasCommented?: boolean
   reportCount?: number
   boostAmount?: number
-  categoryType?: 'builders' | 'eco' | 'apps' | 'agents' | 'dapps'
+  categoryType?: 'builders' | 'eco' | 'apps' | 'agents' | 'descience'
 }
 
 import agentsData from "./a_cards.json"
