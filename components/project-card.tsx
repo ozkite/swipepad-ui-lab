@@ -216,7 +216,7 @@ export function ProjectCard({
         y: [0, 3, -3, 3, -3, 0]
       } : { scale: 1, x: 0, y: 0 }}
       transition={{ duration: 0.2 }}
-      className={`relative w-full max-h-[60vh] h-full rounded-[26px] mt-0 mb-0 mx-auto flex flex-col ${isTurboActive ? 'p-[1px] shadow-[0_0_20px_rgba(255,0,229,0.4)]' : 'p-0 shadow-2xl'} transition-all`}
+      className={`relative w-full h-full rounded-[26px] mt-0 mb-0 mx-auto flex flex-col ${isTurboActive ? 'p-[1px] shadow-[0_0_20px_rgba(255,0,229,0.4)]' : 'p-0 shadow-2xl'} transition-all`}
     >
       {/* Turbo Neon Border Background */}
       {isTurboActive && (
@@ -335,7 +335,7 @@ export function ProjectCard({
           </div>
 
           {/* Action Area (Pill-shaped 3-Button Layout) */}
-          <div className="flex items-center justify-between gap-2 pb-0 mb-2 mt-0.5 px-1">
+          <div className="flex items-center justify-between gap-2 pb-2 mt-0.5 px-1">
             {/* Skip (Left) */}
             <button
               onClick={(e) => handleAction(e, onSwipeLeft)}

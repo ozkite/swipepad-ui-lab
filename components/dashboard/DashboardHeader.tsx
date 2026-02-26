@@ -57,10 +57,10 @@ export function DashboardHeader({
     }, [selectedCategory])
 
     return (
-        <div className="flex flex-col w-full bg-zinc-950 pb-0 pt-1 relative z-50">
+        <div className="flex flex-col w-full bg-zinc-950 pb-2 pt-4 relative z-50">
 
             {/* Zone 1: Header Row */}
-            <div className="flex items-center justify-between px-4 mb-1 h-8">
+            <div className="flex items-center justify-between px-4 mb-5 h-10">
                 {/* Left: Logo */}
                 <h1 className={`${pixelFont.className} text-white text-[10px] tracking-widest`}>
                     SwipePad
@@ -114,7 +114,7 @@ export function DashboardHeader({
             {/* Zone 2: Filter Row */}
             <div
                 ref={scrollerRef}
-                className="w-full h-8 shrink-0 flex flex-nowrap overflow-x-auto scrollbar-hide mb-0 no-scrollbar touch-pan-x snap-x snap-mandatory"
+                className="w-full h-9 shrink-0 flex flex-nowrap overflow-x-auto scrollbar-hide mb-4 no-scrollbar touch-pan-x snap-x snap-mandatory"
             >
                 <div className="flex items-center gap-2 px-4 pr-6 min-w-max pb-1">
                     {categories.map((category) => {
@@ -138,24 +138,23 @@ export function DashboardHeader({
             </div>
 
             {/* Zone 3: Level Tracker */}
-            <div className="flex items-center justify-between px-4 mt-0 pb-1">
-                <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-gray-400 font-medium">LVL</span>
-                    <motion.span
-                        key={currentXP}
-                        initial={{ scale: 1.02, color: "#fff" }}
-                        animate={{ scale: 1, color: "#fff" }}
-                        transition={{ type: "spring", stiffness: 500, damping: 20 }}
-                        className={`text-sm font-bold text-white ${pixelFont.className}`}
-                    >
-                        {level}
-                    </motion.span>
-                </div>
-                <div className="flex flex-col items-end w-32">
-                    <div className="flex justify-between w-full items-end mb-0.5">
-                        <span className="text-[8px] text-gray-400 font-medium">XP</span>
-                        <span className="text-[9px] text-gray-300 font-medium">{currentXP} / {nextLevelXP}</span>
+            <div className="flex items-center justify-between px-4 mt-2 mb-2">
+                <div className="flex flex-col">
+                    <span className="text-[11px] text-gray-400 font-medium tracking-wide mb-1.5">YOUR LEVEL</span>
+                    <div className="flex items-baseline gap-1">
+                        <motion.span
+                            key={currentXP}
+                            initial={{ scale: 1.02, color: "#fff" }}
+                            animate={{ scale: 1, color: "#fff" }}
+                            transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                            className={`text-[26px] font-bold text-white tracking-widest ${pixelFont.className}`}
+                        >
+                            LVL&nbsp;&nbsp;{level}
+                        </motion.span>
                     </div>
+                </div>
+                <div className="flex flex-col items-end w-40 justify-between self-stretch pt-[2px] pb-[4px]">
+                    <span className="text-[11px] text-gray-400 font-medium mb-auto tracking-wide">{currentXP} / {nextLevelXP} XP</span>
                     <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
                         <div
                             className="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 rounded-full transition-all duration-300 ease-out"

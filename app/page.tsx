@@ -497,8 +497,8 @@ export default function Home() {
 
                 <div className="flex-1 relative flex flex-col px-4 pt-0">
 
-                  {/* Zone 4: The Swipe Deck (Fixed Spacing, Top Anchored) */}
-                  <div className="flex-1 flex flex-col pt-0 pb-16">
+                  {/* Zone 4: The Swipe Deck (Equally Centered Space) */}
+                  <div className="flex-1 flex flex-col py-4 pb-16 justify-center">
                     {/* Segmented Discovery Header */}
                     {discoveryTab !== "hidden" && (
                       <div className="flex p-1 bg-zinc-900 rounded-xl mb-3 shrink-0 mx-auto w-full max-w-sm">
