@@ -24,13 +24,13 @@ export function BottomNav({ currentView, onChangeView }: BottomNavProps) {
 
     return (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#0F1729]/95 backdrop-blur-xl border-t border-white/5 pb-3 pt-2 safe-area-bottom">
-            <div className="max-w-md mx-auto flex justify-between items-center px-4">
+            <div className="max-w-md mx-auto flex justify-between items-center px-2 w-full">
                 {navItems.map((item) => (
                     <button
                         key={item.id}
                         onClick={() => onChangeView(item.id)}
                         className={cn(
-                            "flex flex-col items-center justify-center w-12 h-10 space-y-1 transition-all duration-200",
+                            "flex flex-col items-center justify-center flex-1 h-16 space-y-1 transition-all duration-200 relative",
                             currentView === item.id
                                 ? "text-[#E5FF53]"
                                 : "text-gray-500 hover:text-gray-300"

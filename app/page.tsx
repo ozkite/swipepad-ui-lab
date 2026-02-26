@@ -28,6 +28,7 @@ import { BoostModal } from "@/components/modals/BoostModal"
 import { SettingsHub } from "@/components/settings/SettingsHub"
 import { bCardsData, eCardsData, kCardsData } from "@/lib/real_data"
 import agentsData from "@/lib/a_cards.json"
+import dCardsData from "@/lib/d_cards.json"
 import { shuffleArray } from "@/lib/utils"
 // Helper to normalize Builder data
 const normalizeBuilders = (data: any[]): Project[] => data.map((item, i) => ({
@@ -116,6 +117,32 @@ const normalizeAgents = (data: any[]): Project[] => data.map((item, i) => ({
   categoryType: "agents",
   imageUrl: item.image_url,
   website: item.website || undefined,
+  twitter: item.twitter || undefined,
+  github: item.github || undefined,
+  farcaster: item.farcaster || undefined,
+  linkedin: item.linkedin || undefined,
+  fundingGoal: 0,
+  fundingCurrent: 0,
+  likes: 0,
+  comments: 0,
+  walletAddress: item.wallet_address,
+  isBookmarked: false,
+  userHasLiked: false,
+  userHasCommented: false,
+  reportCount: 0,
+  boostAmount: Math.random() > 0.8 ? 100 : 0,
+  verified: false,
+}))
+
+// Helper to normalize DApps Category data
+const normalizeDAppsCategory = (data: any[]): Project[] => data.map((item, i) => ({
+  id: `dapps-${i}`,
+  name: item.name || "Unknown DApp",
+  description: item.description,
+  category: "DApps",
+  categoryType: "dapps",
+  imageUrl: item.image_url,
+  website: item.website || item.project_url || undefined,
   twitter: item.twitter || undefined,
   github: item.github || undefined,
   farcaster: item.farcaster || undefined,
@@ -231,7 +258,8 @@ export default function Home() {
         ...normalizeBuilders(bCardsData),
         ...normalizeEco(eCardsData),
         ...normalizeDapps(kCardsData),
-        ...normalizeAgents(agentsData)
+        ...normalizeAgents(agentsData),
+        ...normalizeDAppsCategory(dCardsData)
       ]
       setFilteredProjects(shuffleArray(allProjects))
       setLoading(false)
@@ -251,7 +279,8 @@ export default function Home() {
         ...normalizeBuilders(bCardsData),
         ...normalizeEco(eCardsData),
         ...normalizeDapps(kCardsData),
-        ...normalizeAgents(agentsData)
+        ...normalizeAgents(agentsData),
+        ...normalizeDAppsCategory(dCardsData)
       ]
     } else if (selectedCategory === "Builders") {
       filtered = normalizeBuilders(bCardsData)
@@ -261,6 +290,8 @@ export default function Home() {
       filtered = normalizeDapps(kCardsData)
     } else if (selectedCategory === "Agents") {
       filtered = normalizeAgents(agentsData)
+    } else if (selectedCategory === "DApps") {
+      filtered = normalizeDAppsCategory(dCardsData)
     }
 
     // ALWAYS SHUFFLE on category change

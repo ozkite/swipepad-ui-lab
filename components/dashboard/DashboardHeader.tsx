@@ -25,7 +25,7 @@ interface DashboardHeaderProps {
     nextLevelXP: number
 }
 
-const categories = ["See All", "Builders", "Eco Projects", "Apps", "Agents"]
+const categories = ["See All", "Builders", "Eco Projects", "Apps", "DApps", "Agents"]
 
 export function DashboardHeader({
     donationAmount,
